@@ -104,8 +104,8 @@ Future<Patient> createUser(Patient patient) async {
     on FormatException{
       throw Exception('Unexpected response format. Please try again later.');
     }
-    catch(e){
-      throw Exception(e.toString());
+    catch(error){
+      throw Exception(error.toString());
     }
     
   }
