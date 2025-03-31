@@ -67,6 +67,7 @@ class MainOnboardScreen extends StatelessWidget {
                   margin: const EdgeInsets.only(
                     left: 20,
                     right: 20,
+                    bottom: 20
                   ),
                   decoration: BoxDecoration(
                       color: AppColors.greenBtn,

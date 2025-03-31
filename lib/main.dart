@@ -14,6 +14,7 @@ TokenRole tokenRole = TokenRole();
 
 void main() {
   return runApp(
+    
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => PatientsProvider()),
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Test Ease',
       theme: ThemeData(
         primaryColor: AppColors.greenBtn,
@@ -81,7 +83,7 @@ class MyApp extends StatelessWidget {
                 return AuthScreen();
             }
           } else {
-            return MainOnboardScreen();
+            return   MainOnboardScreen();
           }
         },
       ),

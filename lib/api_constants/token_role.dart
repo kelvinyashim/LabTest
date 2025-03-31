@@ -24,6 +24,11 @@ class TokenRole {
    return prefs.getString('user_role');
   }
 
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+   return prefs.getString('x-auth-token');
+  }
+
 
   Future<void> logOut() async {
     final prefs = await SharedPreferences.getInstance();

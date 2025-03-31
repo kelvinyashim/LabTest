@@ -59,11 +59,11 @@ class PatientsProvider extends ChangeNotifier{
     }
   }
 
-  Future<void> getCurrentPatient() async {
+  Future<Patient> getCurrentPatient() async {
     _isLoading = true;
-    notifyListeners();
     try{
-     await _userApi.getCurrentPatient();
+     final patient =await _userApi.getCurrentPatient();
+     return patient;
     }catch(e){
       _isLoading = false;
       throw Exception(e.toString());

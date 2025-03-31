@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:test_ease/constants/color.dart';
 
 class MyButton extends StatelessWidget {
   final String text;
@@ -9,9 +12,9 @@ class MyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(20),
+      margin:  EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface.withOpacity(0.66),
+        color: AppColors.greenBtn,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Material(
@@ -20,8 +23,12 @@ class MyButton extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
-          splashColor: Colors.grey.withOpacity(0.3), // Customize the splash color
+          splashColor: Colors.grey.withValues(colorSpace: ColorSpace.displayP3), 
           child: Container(
+            
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30)
+            ),
             padding: const EdgeInsets.all(25),
             child: Center(
               child: Text(
