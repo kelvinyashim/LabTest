@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_ease/api_constants/token_role.dart';
 import 'package:test_ease/constants/color.dart';
+import 'package:test_ease/providers/nav_index_provider.dart';
 import 'package:test_ease/providers/patients_provider.dart';
 import 'package:test_ease/views/admin/admin_screen.dart';
 import 'package:test_ease/views/auth_screen.dart';
 import 'package:test_ease/views/labs/lab_admin_screen.dart';
 import 'package:test_ease/views/onboarding/main_onboard_screen.dart';
+import 'package:test_ease/views/patient/main_screen.dart';
 import 'package:test_ease/views/patient/patient_screen.dart';
 import 'package:test_ease/views/phlebs/phleb_screen.dart';
 
@@ -18,6 +20,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => PatientsProvider()),
+        ChangeNotifierProvider(create: (context) => NavIndexProvider(),)
       ],
       child: MyApp(),
     ),
@@ -74,7 +77,7 @@ class MyApp extends StatelessWidget {
               case 'Admin':
                 return AdminScreen();
               case 'User':
-                return PatientScreen();
+                return MainPatientScreen();
               case 'Lab':
                 return LabAdminScreen();
               case 'Phleb':

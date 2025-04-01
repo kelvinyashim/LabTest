@@ -1,10 +1,15 @@
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:test_ease/constants/color.dart';
 import 'package:test_ease/models/patient.dart';
 import 'package:test_ease/providers/patients_provider.dart';
+import 'package:test_ease/widgets/bottom_nav_bar.dart';
+import 'package:test_ease/widgets/data/grid_data.dart';
+import 'package:test_ease/widgets/drawer.dart';
+import 'package:test_ease/widgets/grid_tile.dart';
 
 class PatientScreen extends StatelessWidget {
   const PatientScreen({super.key});
@@ -12,13 +17,30 @@ class PatientScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.greenBtn,
+          iconTheme: IconThemeData(color: Colors.white),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 30),
+              child: Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+        drawer: MyDrawer(),
         backgroundColor: Colors.white,
         body: FutureBuilder<Patient>(
           future: Provider.of<PatientsProvider>(context, listen: false)
               .getCurrentPatient(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                  child: CircularProgressIndicator(
+                color: AppColors.greenBtn,
+              ));
             }
 
             if (!snapshot.hasData) {
@@ -44,63 +66,43 @@ class PatientScreen extends StatelessWidget {
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: AppColors.greenBtn,
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(60),
-                            bottomRight: Radius.circular(60),
-                          ),
-                        ),
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    width: double.infinity,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: AppColors.greenBtn,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(60),
+                        bottomRight: Radius.circular(60),
                       ),
-                      Text(
-                        "Hello, ${patient.name}",
-                        style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 30),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Icon(
-                                Icons.notification_add,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Icon(
-                              Icons.shopping_cart,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                    ),
+                    child: Text(
+                      textAlign: TextAlign.start,
+                      "Hello, ${patient.name}",
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
                   ),
-
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 200,
+                    width: 330,
+                    child: CarouselView(
+                        scrollDirection: Axis.horizontal,
+                        enableSplash: true,
+                        itemExtent: double.infinity,
+                        children: List<Widget>.generate(5, (int index) {
+                          return Container(
+                            color: AppColors.greenBtn,
+                          );
+                        })).animate(),
+                  ),
                   const SizedBox(height: 20),
-
-                  //  Expanded(
-                  //    child: CarouselView(
-                  //        scrollDirection: Axis.horizontal,
-                  //        itemExtent: double.infinity,
-                  //        children: List<Widget>.generate(10, (int index) {
-                  //          return Center(child: Text('Item $index'));
-                  //        })),
-                  //  ),
-
-                  const SizedBox(height: 20),
-
-                  // Lab Names in Grid View
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: GridView.builder(
@@ -113,21 +115,11 @@ class PatientScreen extends StatelessWidget {
                         mainAxisSpacing: 10,
                         childAspectRatio: 2, // Adjust height
                       ),
-                      itemCount: labs.length,
+                      itemCount: gridData.length,
                       itemBuilder: (context, index) {
-                        return Card(
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Center(
-                            child: Text(
-                              labs[index],
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        );
+                        return MyGridTile(
+                            text: gridData[index]['title'],
+                            asset: gridData[index]['asset']);
                       },
                     ),
                   ),
@@ -136,34 +128,6 @@ class PatientScreen extends StatelessWidget {
             );
           },
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(bottom: 15),
-          child: CurvedNavigationBar(
-            index: 1,
-            backgroundColor: AppColors.greenBtn,
-            items: [
-              CurvedNavigationBarItem(
-                child: Icon(Icons.logo_dev),
-                label: 'Search',
-              ),
-              CurvedNavigationBarItem(
-                child: Icon(Icons.home_outlined),
-                label: 'Home',
-              ),
-              CurvedNavigationBarItem(
-                child: Icon(Icons.person),
-                label: 'Search',
-              ),
-            ],
-            onTap: (index) {
-              // Handle button tap
-              if (index == 1) {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PatientScreen(),
-                ));
-              }
-            },
-          ),
-        ));
+        );
   }
 }
