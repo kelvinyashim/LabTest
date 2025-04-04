@@ -4,6 +4,7 @@ import 'package:test_ease/models/contact_info.dart';
 import 'package:test_ease/models/patient.dart';
 import 'package:test_ease/providers/patients_provider.dart';
 import 'package:test_ease/views/forgot_psw.dart';
+import 'package:test_ease/views/patient/main_screen.dart';
 import 'package:test_ease/views/patient/patient_screen.dart';
 import 'package:test_ease/widgets/custom_text.dart';
 import 'package:test_ease/widgets/my_btn.dart';
@@ -42,6 +43,16 @@ void signUp() async {
         context,
         listen: false,
       ).loginPatient(enteredEmail, enteredPsw);
+
+
+      Future.delayed(Duration(milliseconds: 5));
+       Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>  PatientScreen(),
+        ),
+      );
+
+      
     } else {
       await Provider.of<PatientsProvider>(
         context,
@@ -60,14 +71,15 @@ void signUp() async {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Account created successfully!"),
+          content: Text("Account created successfully!", style: TextStyle(color: Colors.white),),
           backgroundColor: Colors.green,
+          
         ),
       );
 
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const PatientScreen(),
+          builder: (context) =>  MainPatientScreen(),
         ),
       );
     }
@@ -75,8 +87,8 @@ void signUp() async {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(e.toString()),
-        backgroundColor: const Color.fromARGB(0, 125, 14, 6),
+        content: Text(e.toString(), style: TextStyle(color: Colors.black),),
+        backgroundColor:  Colors.grey[200]
       ),
     );
   } finally {

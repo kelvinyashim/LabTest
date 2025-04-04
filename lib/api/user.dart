@@ -8,38 +8,38 @@ class UserApi {
   TokenRole tokenRole = TokenRole();
   final String baseUrl = 'https://labconnect-e569.onrender.com/api/users';
 
-Future<Patient> createUser(Patient patient) async {
-  try {
-    final response = await http.post(
-      Uri.parse('$baseUrl/sign-up'),
-      headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode(patient.toJson()),
-    );
+  Future<Patient> createUser(Patient patient) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/sign-up'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode(patient.toJson()),
+      );
 
-    if (response.statusCode == 201) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      final token = response.headers['x-auth-token'];
+      if (response.statusCode == 201) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final token = response.headers['x-auth-token'];
 
-      if (token != null) {
-        tokenRole.saveTokenRole(token);
+        if (token != null) {
+          tokenRole.saveTokenRole(token);
+        } else {
+          throw Exception("Failed to save authentication token.");
+        }
+
+        return Patient.fromJson(data);
       } else {
-        throw Exception("Failed to save authentication token.");
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        throw Exception(
+            data['message'] ?? "An error occurred. Please try again.");
       }
-
-      return Patient.fromJson(data);
-    } else {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      throw Exception(data['message'] ?? "An error occurred. Please try again.");
+    } on http.ClientException {
+      throw Exception("Network error. Please check your internet connection.");
+    } on FormatException {
+      throw Exception("Unexpected response format. Please try again later.");
+    } catch (e) {
+      throw Exception(e.toString());
     }
-  } on http.ClientException {
-    throw Exception("Network error. Please check your internet connection.");
-  } on FormatException {
-    throw Exception("Unexpected response format. Please try again later.");
-  } catch (e) {
-    throw Exception(e.toString());
   }
-}
-
 
   Future<List<Patient>> getPatients() async {
     final response = await http.get(Uri.parse(baseUrl));
@@ -69,44 +69,53 @@ Future<Patient> createUser(Patient patient) async {
   }
 
   Future<Patient> getCurrentPatient() async {
-    final response = await http.get(Uri.parse('$baseUrl/me'));
+    final token = await tokenRole.getToken();
 
-    if (response.statusCode == 200) {
-      return Patient.fromJson(jsonDecode(response.body));
-    } else {
+    if (token == null) {
+      throw Exception("Failed to load patient data");
+    }
+
+    try {
+      final response =
+          await http.get(Uri.parse('$baseUrl/me'), headers: <String, String>{
+        'x-auth-token': token,
+        'Content-Type': 'application/json; charset=UTF-8',
+      });
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return Patient.fromJson(data['message']);
+      } else {
+        throw Exception('Failed to load patient');
+      }
+    } catch (e) {
       throw Exception('Failed to load patient');
     }
   }
 
-  Future<Patient> loginUser(String email, String password) async {
-    try{
+  Future<void> loginUser(String email, String password) async {
+    try {
       final response = await http.post(
-      Uri.parse('$baseUrl/auth'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({'email': email, 'password': password}),
-    );
-    print(response.body);
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      final token = data['token'] as String;
-      tokenRole.saveTokenRole(token);
-      return Patient.fromJson(data);
-    } else {
-      throw Exception('Failed to create user.');
-    }
-    }
-    on http.ClientException{
+        Uri.parse('$baseUrl/auth'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+   
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final token = data['token'] as String;
+        tokenRole.saveTokenRole(token);
+      } else {
+        throw Exception('Failed to login');
+      }
+    } on http.ClientException {
       throw Exception('Network error. Please check your internet connection.');
-    }
-    on FormatException{
+    } on FormatException {
       throw Exception('Unexpected response format. Please try again later.');
-    }
-    catch(error){
+    } catch (error) {
       throw Exception(error.toString());
     }
-    
   }
 }

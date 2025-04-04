@@ -35,4 +35,9 @@ class Patient {
         "contactInfo": contactInfo?.toJson(),
     };
 
+    @override
+  String toString() {
+    return 'Patient{id: $id, name: $name, email: $email, contactInfo: $contactInfo}';
+  }
+
 }

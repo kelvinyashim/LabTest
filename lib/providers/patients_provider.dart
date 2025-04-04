@@ -2,72 +2,73 @@ import 'package:flutter/material.dart';
 import 'package:test_ease/api/user.dart';
 import 'package:test_ease/models/patient.dart';
 
-class PatientsProvider extends ChangeNotifier{
-  UserApi _userApi = UserApi();
+class PatientsProvider extends ChangeNotifier {
+  final UserApi _userApi = UserApi();
 
-
-  final List<Patient> _patients = [];
   bool _isLoading = false;
-  List<Patient> get patients => _patients;
+  Patient? _currentpatient;
+  
   bool get isLoading => _isLoading;
+  Patient? get currentpatient => _currentpatient;
 
-  Future<void> getPatients() async {
+  // Fetch the current patient data from the API
+  Future<void> fetchCurrentPatient() async {
     _isLoading = true;
-    notifyListeners();
-    try{
-      final patients = await _userApi.getPatients();
-      _patients.clear();
-      _patients.addAll(patients);}
-    catch(e){
-      print(e);
-    }
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  Future<void> createPatient(Patient patient) async {
-    try{
-     final newPatient = await _userApi.createUser(patient);
-      _patients.add(newPatient);
-      notifyListeners();
-
-    }catch(error){
-      throw Exception(error.toString());
-    }
-  }
-
-  Future<void> updatePatient(Patient patient) async {
-    try{
-     final updatedPatient = await _userApi.updatePatient(patient);
-      final index = _patients.indexWhere((element) => element.id == patient.id);
-       if (index != -1) {
-      _patients[index] = updatedPatient; 
+    try {
+      final patient = await getCurrentPatient();
+      _currentpatient = patient;
+    } catch (e) {
+      _currentpatient = null;
+      throw Exception(e.toString());
+    } finally {
+      _isLoading = false; // ✅ Set loading to false when fetching is done
       notifyListeners(); 
     }
+  }
+
+  Future<Patient> getCurrentPatient() async {
+    try {
+      final patient = await _userApi.getCurrentPatient();
+      return patient;
+    } catch (e) {
+      throw Exception('Failed to load patient: $e');
+    }
+  }
+
+  // Create a new patient
+  Future<void> createPatient(Patient patient) async {
+    _isLoading = true;
+    notifyListeners(); 
+
+    try {
+      final newPatient = await _userApi.createUser(patient);
+      _currentpatient = newPatient; 
+      notifyListeners(); 
+    } catch (e) {
+      throw Exception('Failed to create patient: $e');
+    } finally {
+      _isLoading = false; 
+      notifyListeners(); 
+    }
+  }
+
+  // Update patient information
+  Future<void> updatePatient(Patient patient) async {
+    try {
+      final updatedPatient = await _userApi.updatePatient(patient);
+      _currentpatient = updatedPatient; 
       notifyListeners();
-    }catch(e){
-      throw Exception(e.toString());
+    } catch (e) {
+      throw Exception('Failed to update patient: $e');
     }
   }
 
   Future<void> loginPatient(String email, String password) async {
-    try{
-     await _userApi.loginUser(email, password);
+    try {
+      await _userApi.loginUser(email, password);
       notifyListeners();
-    }catch(e){
-      throw Exception(e.toString());
+    } catch (e) {
+      throw Exception('Check email or password');
     }
   }
-
-  Future<void> getCurrentPatient() async {
-    _isLoading = true;
-    notifyListeners();
-    try{
-     await _userApi.getCurrentPatient();
-    }catch(e){
-      _isLoading = false;
-      throw Exception(e.toString());
-    }
-  }
-
 }
