@@ -13,7 +13,7 @@ class MainOnboardScreen extends StatelessWidget {
   MainOnboardScreen({super.key});
 
   final PageController controller = PageController();
-  AppColors appColors = AppColors();
+  final appColors = AppColors();
 
   @override
   Widget build(BuildContext context) {

@@ -82,9 +82,6 @@ class UserApi {
         'Content-Type': 'application/json; charset=UTF-8',
       });
 
-     
-
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return Patient.fromJson(data['message']);
@@ -105,14 +102,13 @@ class UserApi {
         },
         body: jsonEncode({'email': email, 'password': password}),
       );
-      print(response.body);
-      print(response.statusCode);
+   
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final token = data['token'] as String;
         tokenRole.saveTokenRole(token);
       } else {
-        throw Exception('Token not found in response ');
+        throw Exception('Failed to login');
       }
     } on http.ClientException {
       throw Exception('Network error. Please check your internet connection.');

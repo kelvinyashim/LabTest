@@ -4,6 +4,7 @@ import 'package:test_ease/models/contact_info.dart';
 import 'package:test_ease/models/patient.dart';
 import 'package:test_ease/providers/patients_provider.dart';
 import 'package:test_ease/views/forgot_psw.dart';
+import 'package:test_ease/views/patient/main_screen.dart';
 import 'package:test_ease/views/patient/patient_screen.dart';
 import 'package:test_ease/widgets/custom_text.dart';
 import 'package:test_ease/widgets/my_btn.dart';
@@ -47,7 +48,7 @@ void signUp() async {
       Future.delayed(Duration(milliseconds: 5));
        Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const PatientScreen(),
+          builder: (context) =>  PatientScreen(),
         ),
       );
 
@@ -78,7 +79,7 @@ void signUp() async {
 
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const PatientScreen(),
+          builder: (context) =>  MainPatientScreen(),
         ),
       );
     }

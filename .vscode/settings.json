@@ -1,4 +1,5 @@
 {
     "editor.formatOnSave": false,
-    "editor.formatOnType": true
+    "editor.formatOnType": true,
+    "files.autoSave": "onFocusChange"
 }

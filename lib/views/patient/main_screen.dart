@@ -15,7 +15,7 @@ class MainPatientScreen extends StatelessWidget {
 
     List<Widget> screens = [
       const TipUpdates(),
-      const   PatientScreen(),
+          PatientScreen(),
       const PatientProfileScreen()
     ];
     return Scaffold(
