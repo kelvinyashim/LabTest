@@ -11,7 +11,7 @@ class PatientsProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   Patient? get currentpatient => _currentpatient;
 
-  // Fetch the current patient data from the API
+  
   Future<void> fetchCurrentPatient() async {
     _isLoading = true;
     try {
@@ -21,7 +21,7 @@ class PatientsProvider extends ChangeNotifier {
       _currentpatient = null;
       throw Exception(e.toString());
     } finally {
-      _isLoading = false; // ✅ Set loading to false when fetching is done
+      _isLoading = false;
       notifyListeners(); 
     }
   }
@@ -31,7 +31,7 @@ class PatientsProvider extends ChangeNotifier {
       final patient = await _userApi.getCurrentPatient();
       return patient;
     } catch (e) {
-      throw Exception('Failed to load patient: $e');
+      throw Exception('Failed to load patient');
     }
   }
 
@@ -45,7 +45,7 @@ class PatientsProvider extends ChangeNotifier {
       _currentpatient = newPatient; 
       notifyListeners(); 
     } catch (e) {
-      throw Exception('Failed to create patient: $e');
+      throw Exception('Failed to create patient');
     } finally {
       _isLoading = false; 
       notifyListeners(); 
@@ -59,7 +59,7 @@ class PatientsProvider extends ChangeNotifier {
       _currentpatient = updatedPatient; 
       notifyListeners();
     } catch (e) {
-      throw Exception('Failed to update patient: $e');
+      throw Exception('Failed to update patient');
     }
   }
 

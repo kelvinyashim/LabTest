@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:test_ease/api_constants/token_role.dart';
+import 'package:test_ease/models/labs.dart';
 import 'package:test_ease/models/patient.dart';
 
 class UserApi {
@@ -102,7 +103,7 @@ class UserApi {
         },
         body: jsonEncode({'email': email, 'password': password}),
       );
-   
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final token = data['token'] as String;
@@ -118,4 +119,6 @@ class UserApi {
       throw Exception(error.toString());
     }
   }
+
+  
 }

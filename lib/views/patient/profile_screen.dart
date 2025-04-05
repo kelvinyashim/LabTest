@@ -11,7 +11,7 @@ class PatientProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final patientProvider = Provider.of<PatientsProvider>(context);
 
-    // Trigger fetchCurrentPatient if data isn't available yet
+  
 
     return Scaffold(
         backgroundColor: AppColors.greenBtn,
