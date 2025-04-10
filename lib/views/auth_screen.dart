@@ -45,7 +45,7 @@ void signUp() async {
       ).loginPatient(enteredEmail, enteredPsw);
 
 
-      Future.delayed(Duration(milliseconds: 5));
+      Future.delayed(Duration(milliseconds: 10));
        Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) =>  PatientScreen(),

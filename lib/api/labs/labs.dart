@@ -119,30 +119,7 @@ class LabApi {
     }
   }
 
-  Future<Lab> getLabTests(String id) async {
-    final token = await tokenRole.getTokenRole();
-    if (token == null) {
-      throw Exception('Token is null');
-    }
-    try {
-      final response = await http
-          .get(Uri.parse('$baseUrl/tests/labs/$id'), headers: <String, String>{
-        'x-auth-token': token,
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-      if (response.statusCode == 200) {
-        return Lab.fromJson(jsonDecode(response.body));
-      } else {
-        throw Exception('Failed to load lab tests');
-      }
-    } on http.ClientException {
-      throw Exception('Network error. Please check your internet connection.');
-    } on FormatException {
-      throw Exception('Unexpected response format. Please try again later.');
-    } catch (error) {
-      throw Exception(error.toString());
-    }
-  }
+ 
 
   Future<List<Lab>> getAllTestsForLab(String id) async {
     final token = await tokenRole.getTokenRole();

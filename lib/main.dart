@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_ease/api_constants/token_role.dart';
 import 'package:test_ease/constants/color.dart';
+import 'package:test_ease/providers/admin_test_providers.dart';
+import 'package:test_ease/providers/lab_providers.dart';
 import 'package:test_ease/providers/nav_index_provider.dart';
 import 'package:test_ease/providers/patients_provider.dart';
 import 'package:test_ease/views/admin/admin_screen.dart';
@@ -9,18 +11,18 @@ import 'package:test_ease/views/auth_screen.dart';
 import 'package:test_ease/views/labs/lab_admin_screen.dart';
 import 'package:test_ease/views/onboarding/main_onboard_screen.dart';
 import 'package:test_ease/views/patient/main_screen.dart';
-import 'package:test_ease/views/patient/patient_screen.dart';
 import 'package:test_ease/views/phlebs/phleb_screen.dart';
 
 TokenRole tokenRole = TokenRole();
 
 void main() {
   return runApp(
-    
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => PatientsProvider()),
-        ChangeNotifierProvider(create: (context) => NavIndexProvider(),)
+        ChangeNotifierProvider(create: (_) => PatientsProvider()..fetchCurrentPatient()),
+        ChangeNotifierProvider(create: (context) => NavIndexProvider(),),
+        ChangeNotifierProvider(create: (context) => AdminTestProvider()..getTestCatalogue(),),
+        ChangeNotifierProvider(create: (context) => LabProvider(),),
       ],
       child: MyApp(),
     ),
@@ -34,13 +36,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      color: AppColors.greenBtn,
       debugShowCheckedModeBanner: false,
       title: 'Test Ease',
       theme: ThemeData(
-        primaryColor: AppColors.greenBtn,
+        primaryColor: AppColors.greenBtn,  // Set your primary color here
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: AppColors.greenBtn,
+          secondary: AppColors.greenBtn,  // Set your secondary color here
         ),
+        
+        indicatorColor: AppColors.greenBtn,
       ),
       home: FutureBuilder(
         future: tokenRole.getTokenRole(),

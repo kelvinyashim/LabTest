@@ -6,10 +6,12 @@ class Lab {
   final String address;
   final String password;
   final ContactInfo contactInfo;
+  final String? price;
   final String status;
 
   Lab({
     this.id,
+    this.price,
     required this.name,
     required this.address,
     required this.password,
@@ -24,6 +26,7 @@ class Lab {
         password: json["password"],
         contactInfo: ContactInfo.fromJson(json["contactInfo"]),
         status: json["status"],
+        price: json["price"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -32,5 +35,6 @@ class Lab {
         "password": password,
         "contactInfo": contactInfo.toJson(),
         "status": status,
+        "price": price,
       };
 }

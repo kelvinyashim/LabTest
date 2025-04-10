@@ -44,10 +44,12 @@ class TestAdminApi {
     final response = await http.get(Uri.parse('$baseUrl/tests'),
         headers: {'x-auth-token': token, 'Content-Type': 'application/json'});
 
+    
+
     try {
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        return data.map((e)=> TestCatalogue.fromJson(e)).toList();
+        return data.map((e) => TestCatalogue.fromJson(e)).toList();
       } else {
         throw Exception('Failed to get tests');
       }
@@ -59,6 +61,4 @@ class TestAdminApi {
       throw Exception(error.toString());
     }
   }
-
-  
 }

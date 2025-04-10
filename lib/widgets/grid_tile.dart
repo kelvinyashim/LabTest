@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:test_ease/constants/color.dart';
 
 class MyGridTile extends StatelessWidget {
   final String text;

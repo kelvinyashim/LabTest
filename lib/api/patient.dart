@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:test_ease/api_constants/token_role.dart';
-import 'package:test_ease/models/labs.dart';
+import 'package:test_ease/models/labs_test.dart';
 import 'package:test_ease/models/patient.dart';
 
 class UserApi {
@@ -19,6 +19,7 @@ class UserApi {
 
       if (response.statusCode == 201) {
         final Map<String, dynamic> data = jsonDecode(response.body);
+        final patientData = data['message'];
         final token = response.headers['x-auth-token'];
 
         if (token != null) {
@@ -27,7 +28,7 @@ class UserApi {
           throw Exception("Failed to save authentication token.");
         }
 
-        return Patient.fromJson(data);
+        return Patient.fromJson(patientData);
       } else {
         final Map<String, dynamic> data = jsonDecode(response.body);
         throw Exception(
@@ -83,6 +84,7 @@ class UserApi {
         'Content-Type': 'application/json; charset=UTF-8',
       });
 
+     
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return Patient.fromJson(data['message']);
@@ -90,7 +92,7 @@ class UserApi {
         throw Exception('Failed to load patient');
       }
     } catch (e) {
-      throw Exception('Failed to load patient');
+      throw Exception(e.toString());
     }
   }
 
@@ -120,5 +122,31 @@ class UserApi {
     }
   }
 
-  
+  Future<List<LabsTest>> getLabTests(String id) async {
+    final token = await tokenRole.getToken();
+    if (token == null) {
+      throw Exception('Token is null');
+    }
+    try {
+      final response = await http
+          .get(Uri.parse('$baseUrl/tests/labs/$id'), headers: <String, String>{
+        'x-auth-token': token,
+        'Content-Type': 'application/json; charset=UTF-8',
+      });
+
+     
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((e) => LabsTest.fromJson(e)).toList();
+      } else {
+        throw Exception("No labs currently offering this test");
+      }
+    } on http.ClientException {
+      throw Exception('Network error. Please check your internet connection.');
+    } on FormatException {
+      throw Exception('Unexpected response format. Please try again later.');
+    } catch (error) {
+      throw Exception(error.toString());
+    }
+  }
 }
