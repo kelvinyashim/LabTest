@@ -1,15 +1,20 @@
+import 'package:hive/hive.dart';
 import 'package:test_ease/models/labs_test.dart';
-
-class Cart {
+part 'cart.g.dart';
+@HiveType(typeId: 0)
+class CartItem {
+  @HiveField(0)
   final LabsTest labsTest;
-  final int quantity;
-  final double total;
+  
 
-  const Cart({
+  const CartItem({
     required this.labsTest,
-    required this.quantity,
-    required this.total,
   });
 
+
+void removeItem()async{
+  await Hive.box('cart').deleteAt(0);
   
+}
+
 }

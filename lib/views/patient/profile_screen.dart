@@ -12,7 +12,7 @@ class PatientProfileScreen extends StatelessWidget {
     final patientProvider = Provider.of<PatientsProvider>(context);
 
     return Scaffold(
-      backgroundColor: AppColors.greenBtn,
+      backgroundColor: Colors.grey[300],
       body:
           patientProvider.isLoading
               ? const Center(
@@ -29,8 +29,12 @@ class PatientProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: AppColors.greenBtn,
+                      ),
                       onPressed: () {
-                        patientProvider.fetchCurrentPatient(); // Retry
+                        patientProvider.fetchCurrentPatient();
                       },
                       child: const Text("Retry"),
                     ),
@@ -38,86 +42,122 @@ class PatientProfileScreen extends StatelessWidget {
                 ),
               )
               : SingleChildScrollView(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 60),
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 60,
-                          child: Icon(
-                            Icons.person_rounded,
-                            size: 90,
-                            color: Colors.grey[300],
-                          ),
-                        ),
-                        SizedBox(height: 15),
-
-                        Container(
-                          alignment: Alignment.topRight,
-                          width: double.infinity,
-                          height: 330,
-                          margin: EdgeInsets.all(30),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.edit_note,
-                                  color: Colors.grey,
-                                  size: 35,
-                                ),
-                                alignment: Alignment.topRight,
-                              ),
-                              MyListTile(
-                                text: "Name",
-                                name: patientProvider.currentpatient!.name,
-                              ),
-                              MyListTile(
-                                text: "Email",
-                                name: patientProvider.currentpatient!.email,
-                              ),
-                              MyListTile(
-                                text: "Address",
-                                name:
-                                    patientProvider
-                                        .currentpatient!
-                                        .contactInfo!
-                                        .address!,
-                              ),
-                              MyListTile(
-                                text: "Phone",
-                                name:
-                                    patientProvider
-                                        .currentpatient!
-                                        .contactInfo!
-                                        .phone,
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Container(
-                          alignment: Alignment.topRight,
-                          width: double.infinity,
-                          height: 330,
-                          margin: EdgeInsets.all(30),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Text("he"),
-                        ),
-                      ],
+                child: Column(
+                  children: [
+                    const SizedBox(height: 60),
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 60,
+                      child: Icon(
+                        Icons.person_rounded,
+                        size: 90,
+                        color: Colors.grey[300],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 12),
+                    Text(
+                      patientProvider.currentpatient!.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Info Card
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              onPressed: () {
+                                showAboutDialog(context: context);
+                              },
+                              icon: const Icon(
+                                Icons.edit_note,
+                                color: Colors.grey,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          MyListTile(
+                            text: "Name",
+                            name: patientProvider.currentpatient!.name,
+                          ),
+                          MyListTile(
+                            text: "Email",
+                            name: patientProvider.currentpatient!.email,
+                          ),
+                          MyListTile(
+                            text: "Address",
+                            name:
+                                patientProvider
+                                    .currentpatient!
+                                    .contactInfo!
+                                    .address!,
+                          ),
+                          MyListTile(
+                            text: "Phone",
+                            name:
+                                patientProvider
+                                    .currentpatient!
+                                    .contactInfo!
+                                    .phone,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Placeholder for another section
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      padding: const EdgeInsets.all(20),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const Text(
+                        "Additional Information (Coming Soon)",
+                        style: TextStyle(color: Colors.black87, fontSize: 16),
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
+                  ],
                 ),
               ),
     );
