@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:test_ease/api/patient.dart';
 import 'package:test_ease/constants/color.dart';
 import 'package:test_ease/main.dart';
@@ -50,6 +49,7 @@ class LabTestsPriceScreen extends StatelessWidget {
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   final lab = snapshot.data![index];
+                  
                   return InkWell(
                     radius: 30,
                     onTap: () {
@@ -97,7 +97,14 @@ class LabTestsPriceScreen extends StatelessWidget {
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                backgroundColor: Colors.white70,
+                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                                margin: EdgeInsets.all(10),
+                                backgroundColor: Colors.white,
+                                elevation: 4,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                                 content: Text(
                                   'Added to cart',
                                   style: TextStyle(color: Colors.grey),
@@ -108,6 +115,11 @@ class LabTestsPriceScreen extends StatelessWidget {
                           child: Text(
                             'Select Lab',
                             style: TextStyle(color: AppColors.greenBtn),
+                          ).animate(
+                            delay: Duration(milliseconds: 20)
+                            
+                          
+
                           ),
                         ),
                       ),

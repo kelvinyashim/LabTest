@@ -87,6 +87,7 @@ class LabTestsScreen extends StatelessWidget {
                           itemCount: testCatProvider.testCatalogue.length,
                           itemBuilder: (context, index) {
                             final test = testCatProvider.testCatalogue[index];
+                             
                             final id = test.id;
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 8),

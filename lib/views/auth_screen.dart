@@ -61,7 +61,7 @@ void signUp() async {
         Patient(
           name: enteredName,
           contactInfo: ContactInfo(
-            address: enteredAddress,
+            address: [enteredAddress],
             phone: enteredContact,
           ),
           email: enteredEmail,

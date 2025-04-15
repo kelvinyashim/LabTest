@@ -93,7 +93,7 @@ class PatientProfileScreen extends StatelessWidget {
                             alignment: Alignment.topRight,
                             child: IconButton(
                               onPressed: () {
-                                showAboutDialog(context: context);
+                                showAboutDialog(context: context, applicationName: "Lab_Connect", applicationVersion: "1.0.0", applicationIcon: Icon(Icons.medical_information), );
                               },
                               icon: const Icon(
                                 Icons.edit_note,
@@ -117,7 +117,7 @@ class PatientProfileScreen extends StatelessWidget {
                                 patientProvider
                                     .currentpatient!
                                     .contactInfo!
-                                    .address!,
+                                    .address!.first,
                           ),
                           MyListTile(
                             text: "Phone",

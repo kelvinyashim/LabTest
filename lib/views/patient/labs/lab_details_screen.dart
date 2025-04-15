@@ -27,21 +27,18 @@ class LabDetailsScreen extends StatelessWidget {
                   backgroundColor: AppColors.greenBtn,
                   floating: true,
                   pinned: true,
-                  expandedHeight: 120,
+                  expandedHeight: 300,
+           
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
-                    title: Text(
-                      textAlign: TextAlign.center,
-                      lab.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
+                    title: Image.network(
+                      "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGhvc3BpdGFsfGVufDB8fDB8fHww",
+                      width: 300,
+                      height: 300,    
+                      fit: BoxFit.fill,
                     ),
-                    background: Container(
-                      color: AppColors.greenBtn,
-                    ),
+
+                    background: Container(color: AppColors.greenBtn),
                   ),
                   leading: IconButton(
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -53,15 +50,32 @@ class LabDetailsScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
-                        _buildInfoCard("Status", lab.status, Icons.verified, Colors.green),
+                        _buildInfoCard(
+                          "Status",
+                          lab.status,
+                          Icons.verified,
+                          Colors.green,
+                        ),
                         const SizedBox(height: 12),
                         _buildInfoCard("Name", lab.name, Icons.local_hospital),
                         const SizedBox(height: 12),
-                        _buildInfoCard("Address", lab.address, Icons.location_on),
+                        _buildInfoCard(
+                          "Address",
+                          lab.address,
+                          Icons.location_on,
+                        ),
                         const SizedBox(height: 12),
-                        _buildInfoCard("Phone", lab.contactInfo.phone, Icons.phone),
+                        _buildInfoCard(
+                          "Phone",
+                          lab.contactInfo.phone,
+                          Icons.phone,
+                        ),
                         const SizedBox(height: 12),
-                        _buildInfoCard("Email", lab.contactInfo.email ?? "Not Available", Icons.email),
+                        _buildInfoCard(
+                          "Email",
+                          lab.contactInfo.email ?? "Not Available",
+                          Icons.email,
+                        ),
                       ],
                     ),
                   ),
@@ -78,17 +92,18 @@ class LabDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard(String title, String value, IconData icon, [Color? iconColor]) {
+  Widget _buildInfoCard(
+    String title,
+    String value,
+    IconData icon, [
+    Color? iconColor,
+  ]) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 3),
-          ),
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
         ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -100,11 +115,10 @@ class LabDetailsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black54,
-                    )),
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 14, color: Colors.black54),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   value,

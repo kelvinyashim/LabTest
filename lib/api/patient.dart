@@ -87,6 +87,8 @@ class UserApi {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
+      print(response.body);
+      print(response.statusCode);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);

@@ -22,7 +22,6 @@ TokenRole tokenRole = TokenRole();
 var cartBox = Hive.box<CartItem>('cart');
 UserApi patientApi = UserApi();
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final appDir = await getApplicationDocumentsDirectory();
@@ -40,7 +39,9 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => AdminTestProvider()..getTestCatalogue(),
         ),
-        ChangeNotifierProvider(create: (context) => LabProvider()..fetchCurrentLab()),
+        ChangeNotifierProvider(
+          create: (context) => LabProvider()..fetchCurrentLab(),
+        ),
       ],
       child: MyApp(),
     ),
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: AppColors.greenBtn,
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: AppColors.greenBtn, 
+          secondary: AppColors.greenBtn,
         ),
 
         indicatorColor: AppColors.greenBtn,
