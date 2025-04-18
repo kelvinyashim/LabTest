@@ -43,12 +43,15 @@ void signUp() async {
         context,
         listen: false,
       ).loginPatient(enteredEmail, enteredPsw);
+      await Provider.of<PatientsProvider>(context, listen: false).fetchCurrentPatient();
+      await Provider.of<PatientsProvider>(context, listen: false).getPatientAddress();
+
 
 
       Future.delayed(Duration(milliseconds: 10));
        Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) =>  PatientScreen(),
+          builder: (context) =>  MainPatientScreen(),
         ),
       );
 
@@ -68,6 +71,9 @@ void signUp() async {
           password: enteredPsw,
         ),
       );
+      await Provider.of<PatientsProvider>(context, listen: false).fetchCurrentPatient();
+      await Provider.of<PatientsProvider>(context, listen: false).getPatientAddress();
+
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

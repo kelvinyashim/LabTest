@@ -54,7 +54,7 @@ class CustomTextFormField extends StatelessWidget {
         ),
         validator: validator,
         obscureText: isPassword,
-      ),
+      ), 
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_ease/constants/color.dart';
+import 'package:test_ease/views/patient/order/schedule_screen.dart';
 
 class CheckoutBtn extends StatelessWidget {
   const CheckoutBtn({super.key});
@@ -16,7 +17,9 @@ class CheckoutBtn extends StatelessWidget {
           splashColor: Colors.grey,
           customBorder: const StadiumBorder(),
           onTap: () {
-            // Your action
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => ScheduleScreen()));
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),

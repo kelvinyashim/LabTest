@@ -25,16 +25,13 @@ class LabDetailsScreen extends StatelessWidget {
                 SliverAppBar(
                   elevation: 3,
                   backgroundColor: AppColors.greenBtn,
-                  floating: true,
-                  pinned: true,
                   expandedHeight: 300,
-           
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Image.network(
-                      "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGhvc3BpdGFsfGVufDB8fDB8fHww",
+                      "https://media.istockphoto.com/id/2031206227/photo/hospital-floor-interior-no-people.webp?a=1&b=1&s=612x612&w=0&k=20&c=dXhQn-pLaG3frLpzlOhVpewydewy55rOoQIepb0s5Ok=",
                       width: 300,
-                      height: 300,    
+                      height: 310,    
                       fit: BoxFit.fill,
                     ),
 

@@ -10,10 +10,11 @@ class PatientsProvider extends BaseViewModel {
 
   Patient? get currentpatient => _currentpatient;
 
-  Lab ? _currentlab;
+  Lab? _currentlab;
   Lab? get currentlab => _currentlab;
 
-
+  List<String> _adrresses = [];
+  List<String> get addresses => _adrresses;
 
   Future<void> fetchCurrentPatient() async {
     await runWithLoader(() async {
@@ -41,9 +42,23 @@ class PatientsProvider extends BaseViewModel {
     });
   }
 
-   Future<void> getLabInfo(String id) async {
+  Future<void> getLabInfo(String id) async {
     await runWithLoader(() async {
-     _currentlab = await _userApi.getLabInfo(id);
+      _currentlab = await _userApi.getLabInfo(id);
+    });
+  }
+
+  Future<void> getPatientAddress() async {
+    await runWithLoader(() async {
+      final fetched = await _userApi.getPatientAddress();
+      _adrresses = fetched;
+    });
+  }
+
+  Future<void> addAddress(String newAddress) async {
+    await runWithLoader(() async {
+       await _userApi.addAddress(newAddress);
+      _adrresses.add(newAddress);
     });
   }
 }

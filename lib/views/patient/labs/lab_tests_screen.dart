@@ -19,10 +19,12 @@ class LabTestsScreen extends StatelessWidget {
           child: Container(
             height: 10,
             decoration: BoxDecoration(
-                color: AppColors.greenBtn,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(60),
-                    bottomRight: Radius.circular(60))),
+              color: AppColors.greenBtn,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(60),
+                bottomRight: Radius.circular(60),
+              ),
+            ),
           ),
         ),
         backgroundColor: AppColors.greenBtn,
@@ -35,102 +37,127 @@ class LabTestsScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: testCatProvider.isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-              color: AppColors.greenBtn,
-            ))
-          : testCatProvider.testCatalogue.isEmpty
+      body:
+          testCatProvider.isLoading
               ? const Center(
-                  child: Text(
-                  'No Lab Tests Found',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                ))
+                child: CircularProgressIndicator(color: AppColors.greenBtn),
+              )
+              : testCatProvider.testCatalogue.isEmpty
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No Lab Tests Found',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+
+                    ElevatedButton(
+                      onPressed: () {
+                        testCatProvider.getTestCatalogue();
+                      },
+                      child: Text("Retry", style: TextStyle(color: AppColors.greenBtn),),
+                    ),
+                  ],
+                ),
+              )
               : Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Custom Search Bar with enhanced styling
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 17),
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 6,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search,
-                                color: Colors.grey, size: 30),
-                            hintText: 'Search Lab Tests',
-                            border: InputBorder.none,
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Custom Search Bar with enhanced styling
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 17),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                            size: 30,
+                          ),
+                          hintText: 'Search Lab Tests',
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 12,
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: testCatProvider.testCatalogue.length,
-                          itemBuilder: (context, index) {
-                            final test = testCatProvider.testCatalogue[index];
-                             
-                            final id = test.id;
-                            return Card(
-                              margin: const EdgeInsets.symmetric(vertical: 8),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: testCatProvider.testCatalogue.length,
+                        itemBuilder: (context, index) {
+                          final test = testCatProvider.testCatalogue[index];
+
+                          final id = test.id;
+                          return Card(
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 4,
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(15),
+                              leading: Icon(
+                                Icons.medication,
+                                color: AppColors.greenBtn,
+                                size: 32,
                               ),
-                              elevation: 4,
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.all(15),
-                                leading: Icon(Icons.medication,
-                                    color: AppColors.greenBtn, size: 32),
-                                title: Text(
-                                  test.name,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                              title: Text(
+                                test.name,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                textAlign: TextAlign.left,
+                                test.description!,
+                                style: GoogleFonts.lato(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              trailing: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 20,
+                                color: Colors.grey,
+                              ),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            LabTestsPriceScreen(id: id!),
                                   ),
-                                ),
-                                subtitle: Text(
-                                  textAlign: TextAlign.left,
-                                  test.description!,
-                                  style: GoogleFonts.lato(
-                                    fontSize: 14,
-                                    color: Colors.grey[600],
-                                    
-                                  )
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios,
-                                    size: 20, color: Colors.grey),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => LabTestsPriceScreen(
-                                            id: id!,
-                                          )));
-                                },
-                              ),
-                            );
-                          },
-                        ),
+                                );
+                              },
+                            ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
     );
   }
 }

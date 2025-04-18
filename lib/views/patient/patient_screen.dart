@@ -33,6 +33,8 @@ class PatientScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final patient = Provider.of<PatientsProvider>(context);
+
+  
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.greenBtn,
@@ -40,6 +42,12 @@ class PatientScreen extends StatelessWidget {
         actions: [
           Carticons(),
           const SizedBox(width: 12),
+          IconButton(
+            onPressed: () {
+              tokenRole.logOut();
+            },
+            icon: Icon(Icons.abc),
+          ),
         ],
       ),
       drawer: MyDrawer(),

@@ -110,6 +110,8 @@ class UserApi {
         },
         body: jsonEncode({'email': email, 'password': password}),
       );
+      print(response.statusCode);
+      print(response.body);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -181,6 +183,72 @@ class UserApi {
       throw Exception('Unexpected response format. Please try again later.');
     } catch (error) {
       throw Exception(error.toString());
+    }
+  }
+
+  Future<List<String>> getPatientAddress() async {
+    final token = await tokenRole.getToken();
+    if (token == null) {
+      throw Exception('Token is null');
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/my-address'),
+        headers: {
+          'x-auth-token': token,
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      print(response.statusCode);
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final List<dynamic> addresses = data['addresses'];
+        return addresses.map((e) => e.toString()).toList();
+      } else {
+        throw Exception("Failed to get patient address");
+      }
+    } on http.ClientException {
+      throw Exception('Network error. Please check your internet connection.');
+    } on FormatException {
+      throw Exception('Unexpected response format. Please try again later.');
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> addAddress(String address) async {
+    final token = await tokenRole.getToken();
+    if (token == null) {
+      throw Exception('Token is null');
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/add-address'),
+        headers: {
+          'x-auth-token': token,
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'newAddress': address}),
+      );
+
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data["addresses"];
+      } else {
+        throw Exception("Failed to get patient address");
+      }
+    } on http.ClientException {
+      throw Exception('Network error. Please check your internet connection.');
+    } on FormatException {
+      throw Exception('Unexpected response format. Please try again later.');
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 }

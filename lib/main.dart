@@ -11,6 +11,8 @@ import 'package:test_ease/providers/admin_test_providers.dart';
 import 'package:test_ease/providers/lab_providers.dart';
 import 'package:test_ease/providers/nav_index_provider.dart';
 import 'package:test_ease/providers/patients_provider.dart';
+import 'package:test_ease/providers/schedule_provider.dart';
+import 'package:test_ease/providers/step_provider.dart';
 import 'package:test_ease/views/admin/admin_screen.dart';
 import 'package:test_ease/views/auth_screen.dart';
 import 'package:test_ease/views/labs/lab_admin_screen.dart';
@@ -33,7 +35,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => PatientsProvider()..fetchCurrentPatient(),
+          create: (_) => PatientsProvider()..fetchCurrentPatient()..getPatientAddress(),
         ),
         ChangeNotifierProvider(create: (context) => NavIndexProvider()),
         ChangeNotifierProvider(
@@ -42,6 +44,8 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => LabProvider()..fetchCurrentLab(),
         ),
+        ChangeNotifierProvider(create:(context) => StepProvider(),),
+        ChangeNotifierProvider(create: (context) => ScheduleProvider(),)
       ],
       child: MyApp(),
     ),
