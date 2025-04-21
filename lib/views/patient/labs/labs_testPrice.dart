@@ -97,6 +97,7 @@ class LabTestsPriceScreen extends StatelessWidget {
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
+                                duration: Duration(milliseconds: 90),
                                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                                 margin: EdgeInsets.all(10),
                                 backgroundColor: Colors.white,

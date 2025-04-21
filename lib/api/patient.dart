@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:test_ease/api_constants/token_role.dart';
 import 'package:test_ease/models/labs.dart';
 import 'package:test_ease/models/labs_test.dart';
+import 'package:test_ease/models/order.dart';
 import 'package:test_ease/models/patient.dart';
 
 class UserApi {
@@ -87,8 +88,6 @@ class UserApi {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-      print(response.body);
-      print(response.statusCode);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -110,8 +109,6 @@ class UserApi {
         },
         body: jsonEncode({'email': email, 'password': password}),
       );
-      print(response.statusCode);
-      print(response.body);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -201,9 +198,6 @@ class UserApi {
         },
       );
 
-      print(response.statusCode);
-      print(response.body);
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final List<dynamic> addresses = data['addresses'];
@@ -236,7 +230,6 @@ class UserApi {
         body: jsonEncode({'newAddress': address}),
       );
 
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return data["addresses"];
@@ -250,5 +243,67 @@ class UserApi {
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  //Orders
+
+  Future<Order> createOrder(Order order) async {
+    final token = await tokenRole.getToken();
+    if (token == null) {
+      throw Exception('Token is null');
+    }
+    try{
+      final response = await http.post(Uri.parse('$baseUrl/create-order'), headers: {
+         'x-auth-token': token,
+          'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(order.toJson())
+      );
+
+      if(response.statusCode == 201){
+        final data = jsonDecode(response.body);
+        final newOrder = data['order'];
+        return Order.fromJson(newOrder);
+      }else{
+        throw Exception('Failed to create order');
+      }
+    }on http.ClientException {
+      throw Exception('Network error. Please check your internet connection.');
+    } on FormatException {
+      throw Exception('Unexpected response format. Please try again later.');
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  //getOrders
+  Future<List<Order>> getOrders()async{
+    final token = await tokenRole.getToken();
+    if (token == null) {
+      throw Exception('Token is null');
+    }
+
+    try{
+      final response = await http.get(Uri.parse('$baseUrl/my-orders'), headers: {
+        'x-auth-token' : token,
+        'Content-Type': 'application/json; charset=UTF-8',
+      });
+
+      if(response.statusCode == 200){
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((e)=> Order.fromJson(e)).toList();
+      }else{
+        throw Exception("Failed to load patient's orders");
+      }
+
+      
+    }on http.ClientException {
+      throw Exception('Network error. Please check your internet connection.');
+    } on FormatException {
+      throw Exception('Unexpected response format. Please try again later.');
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+
   }
 }

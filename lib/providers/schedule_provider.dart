@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 
 class ScheduleProvider extends ChangeNotifier {
   String? _selectedAddress;
-  String? _selectedDate;
-  String? _selectedTime;
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
   String ? get selectedAddress => _selectedAddress;
-  String ? get selectedDate => _selectedDate;
-  String ? get selectedTime => _selectedTime;
+  DateTime ? get selectedDate => _selectedDate;
+  TimeOfDay ? get selectedTime => _selectedTime;
 
   void selectAddress(String value){
-      print("Address selected: $value");
     _selectedAddress = value;
     notifyListeners();
   }
 
-  void selectDate(String value){
+  void selectDate(DateTime value){
     _selectedDate = value;
     notifyListeners();
     }
-    void selectTime(String value){
+    void selectTime(TimeOfDay value){
       _selectedTime = value;
       notifyListeners();
       }

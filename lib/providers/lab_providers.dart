@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:test_ease/api/labs/labs.dart';
-import 'package:test_ease/api/patient.dart';
 import 'package:test_ease/models/labs.dart';
 import 'package:test_ease/providers/base_view_model.dart';
 

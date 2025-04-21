@@ -13,8 +13,8 @@ import 'package:test_ease/providers/nav_index_provider.dart';
 import 'package:test_ease/providers/patients_provider.dart';
 import 'package:test_ease/providers/schedule_provider.dart';
 import 'package:test_ease/providers/step_provider.dart';
+import 'package:test_ease/providers/token_provider.dart';
 import 'package:test_ease/views/admin/admin_screen.dart';
-import 'package:test_ease/views/auth_screen.dart';
 import 'package:test_ease/views/labs/lab_admin_screen.dart';
 import 'package:test_ease/views/onboarding/main_onboard_screen.dart';
 import 'package:test_ease/views/patient/main_screen.dart';
@@ -35,7 +35,11 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => PatientsProvider()..fetchCurrentPatient()..getPatientAddress(),
+          create:
+              (_) =>
+                  PatientsProvider()
+                    ..fetchCurrentPatient()
+                    ..getPatientAddress(),
         ),
         ChangeNotifierProvider(create: (context) => NavIndexProvider()),
         ChangeNotifierProvider(
@@ -44,8 +48,11 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => LabProvider()..fetchCurrentLab(),
         ),
-        ChangeNotifierProvider(create:(context) => StepProvider(),),
-        ChangeNotifierProvider(create: (context) => ScheduleProvider(),)
+        ChangeNotifierProvider(create: (context) => StepProvider()),
+        ChangeNotifierProvider(create: (context) => ScheduleProvider()),
+        ChangeNotifierProvider(
+          create: (context) => TokenProvider()..loadRole(),
+        ),
       ],
       child: MyApp(),
     ),
@@ -57,65 +64,38 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokenProvider = Provider.of<TokenProvider>(context);
+    final role = tokenProvider.tokenRole;
     return MaterialApp(
       color: AppColors.greenBtn,
       debugShowCheckedModeBanner: false,
       title: 'Test Ease',
       theme: ThemeData(
+        useMaterial3: true,
+        pageTransitionsTheme: PageTransitionsTheme(
+          builders: Map<TargetPlatform, PageTransitionsBuilder>.fromIterable(
+            TargetPlatform.values,
+            value: (_) => const FadeForwardsPageTransitionsBuilder(),
+          ),
+        ),
         primaryColor: AppColors.greenBtn,
         colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: AppColors.greenBtn,
         ),
-
         indicatorColor: AppColors.greenBtn,
       ),
-      home: FutureBuilder(
-        future: tokenRole.getTokenRole(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(body: Center(child: CircularProgressIndicator()));
-          }
-
-          if (snapshot.hasError) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showDialog(
-                context: context,
-                builder:
-                    (context) => AlertDialog(
-                      title: Text('Error'),
-                      content: Text(snapshot.error.toString()),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text('OK'),
-                        ),
-                      ],
-                    ),
-              );
-            });
-            return AuthScreen();
-          }
-
-          if (snapshot.hasData || snapshot.data != null) {
-            final role = snapshot.data;
-
-            switch (role) {
-              case 'Admin':
-                return AdminScreen();
-              case 'User':
-                return MainPatientScreen();
-              case 'Lab':
-                return LabAdminScreen();
-              case 'Phleb':
-                return PhlebScreen();
-              default:
-                return AuthScreen();
-            }
-          } else {
-            return MainOnboardScreen();
-          }
-        },
-      ),
+      home:
+          tokenProvider.isLoading
+              ? Center(child: CircularProgressIndicator())
+              : tokenProvider.tokenRole!.isEmpty
+              ? Center(child: Text(tokenProvider.error!))
+              : switch (role) {
+                'Admin' => AdminScreen(),
+                'User' => MainPatientScreen(),
+                'Lab' => LabAdminScreen(),
+                'Phleb' => PhlebScreen(),
+                _ => MainOnboardScreen(),
+              },
     );
   }
 }

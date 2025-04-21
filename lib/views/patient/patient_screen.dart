@@ -1,14 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:test_ease/constants/color.dart';
 import 'package:test_ease/main.dart';
-import 'package:test_ease/models/cart.dart';
 import 'package:test_ease/providers/patients_provider.dart';
-import 'package:test_ease/views/patient/cart_screen.dart';
 import 'package:test_ease/views/patient/labs/lab_tests_screen.dart';
 import 'package:test_ease/widgets/cartIcons.dart';
 import 'package:test_ease/widgets/data/grid_data.dart';
@@ -34,7 +31,6 @@ class PatientScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final patient = Provider.of<PatientsProvider>(context);
 
-  
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.greenBtn,
@@ -55,13 +51,21 @@ class PatientScreen extends StatelessWidget {
       body:
           patient.isLoading
               ? Center(
-                child: CircularProgressIndicator(color: AppColors.greenBtn),
+                child: CupertinoActivityIndicator(
+                  radius: 12,
+                  color: AppColors.greenBtn,
+                ),
               )
               : patient.currentpatient == null
               ? Center(
-                child: Text(
-                  'Something went wrong\n                    ...',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                child: TextButton(
+                  onPressed: () {
+                    patient.fetchCurrentPatient();
+                  },
+                  child: Text(
+                    'Something went wrong\n Refresh                   ...',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                 ),
               )
               : SingleChildScrollView(

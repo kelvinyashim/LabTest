@@ -71,7 +71,6 @@ class LabTestsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Custom Search Bar with enhanced styling
                     Container(
                       margin: const EdgeInsets.only(bottom: 17),
                       padding: const EdgeInsets.symmetric(horizontal: 16),
