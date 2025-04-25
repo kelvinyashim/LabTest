@@ -252,22 +252,28 @@ class UserApi {
     if (token == null) {
       throw Exception('Token is null');
     }
-    try{
-      final response = await http.post(Uri.parse('$baseUrl/create-order'), headers: {
-         'x-auth-token': token,
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/create-order'),
+        headers: {
+          'x-auth-token': token,
           'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(order.toJson())
+        },
+        body: jsonEncode(order.toJson()),
       );
 
-      if(response.statusCode == 201){
+      print(response.statusCode);
+      print(response.body);
+
+      if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         final newOrder = data['order'];
         return Order.fromJson(newOrder);
-      }else{
-        throw Exception('Failed to create order');
+      } else {
+          final data = jsonDecode(response.body);
+        throw Exception(data['message']);
       }
-    }on http.ClientException {
+    } on http.ClientException {
       throw Exception('Network error. Please check your internet connection.');
     } on FormatException {
       throw Exception('Unexpected response format. Please try again later.');
@@ -277,33 +283,33 @@ class UserApi {
   }
 
   //getOrders
-  Future<List<Order>> getOrders()async{
+  Future<List<Order>> getPatientOrders() async {
     final token = await tokenRole.getToken();
     if (token == null) {
       throw Exception('Token is null');
     }
 
-    try{
-      final response = await http.get(Uri.parse('$baseUrl/my-orders'), headers: {
-        'x-auth-token' : token,
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/my-orders'),
+        headers: {
+          'x-auth-token': token,
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        return data.map((e)=> Order.fromJson(e)).toList();
-      }else{
+        return data.map((e) => Order.fromJson(e)).toList();
+      } else {
         throw Exception("Failed to load patient's orders");
       }
-
-      
-    }on http.ClientException {
+    } on http.ClientException {
       throw Exception('Network error. Please check your internet connection.');
     } on FormatException {
       throw Exception('Unexpected response format. Please try again later.');
     } catch (e) {
       throw Exception(e.toString());
     }
-
   }
 }

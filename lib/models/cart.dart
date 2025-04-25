@@ -12,9 +12,5 @@ class CartItem {
   });
 
 
-void removeItem()async{
-  await Hive.box('cart').deleteAt(0);
-  
-}
 
 }

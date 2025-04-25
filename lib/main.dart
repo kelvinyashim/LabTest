@@ -8,6 +8,7 @@ import 'package:test_ease/constants/color.dart';
 import 'package:test_ease/models/cart.dart';
 import 'package:test_ease/models/labs_test.dart';
 import 'package:test_ease/providers/admin_test_providers.dart';
+import 'package:test_ease/providers/cart_box_provider.dart';
 import 'package:test_ease/providers/lab_providers.dart';
 import 'package:test_ease/providers/nav_index_provider.dart';
 import 'package:test_ease/providers/patients_provider.dart';
@@ -22,6 +23,7 @@ import 'package:test_ease/views/phlebs/phleb_screen.dart';
 
 TokenRole tokenRole = TokenRole();
 var cartBox = Hive.box<CartItem>('cart');
+var cart = Hive.openBox<CartItem>('cart');
 UserApi patientApi = UserApi();
 
 void main() async {
@@ -39,7 +41,7 @@ void main() async {
               (_) =>
                   PatientsProvider()
                     ..fetchCurrentPatient()
-                    ..getPatientAddress(),
+                    ..getPatientAddress()..getOrders(),
         ),
         ChangeNotifierProvider(create: (context) => NavIndexProvider()),
         ChangeNotifierProvider(
@@ -53,6 +55,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => TokenProvider()..loadRole(),
         ),
+        ChangeNotifierProvider(create: (context) => CartBoxProvider()..initCart(),)
       ],
       child: MyApp(),
     ),

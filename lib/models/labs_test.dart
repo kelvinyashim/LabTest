@@ -13,6 +13,7 @@ class LabsTest {
   final int price;
   @HiveField(4)
    String? labId;
+   @HiveField(5)
    LabsTest({
 
     required this.testName,

@@ -31,7 +31,7 @@ class PatientsProvider extends BaseViewModel {
 
   Future<void> createPatient(Patient patient) async {
     await runWithLoader(() async {
-      await _userApi.createUser(patient);
+     _currentpatient = await  _userApi.createUser(patient);
     });
   }
 
@@ -75,7 +75,7 @@ class PatientsProvider extends BaseViewModel {
 
   Future<void> getOrders() async {
     await runWithLoader(() async {
-      _orders = await _userApi.getOrders();
+      _orders = await _userApi.getPatientOrders();
     });
   }
 }

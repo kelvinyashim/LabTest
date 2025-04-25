@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:test_ease/constants/color.dart';
-import 'package:test_ease/views/patient/order/schedule_screen.dart';
 
 class CheckoutBtn extends StatelessWidget {
-  const CheckoutBtn({super.key});
+  const CheckoutBtn({super.key, required this.onpressed});
+  final void Function() onpressed;
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +16,7 @@ class CheckoutBtn extends StatelessWidget {
         child: InkWell(
           splashColor: Colors.grey,
           customBorder: const StadiumBorder(),
-          onTap: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (context) => ScheduleScreen()));
-          },
+          onTap: onpressed,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             margin: EdgeInsets.only(bottom: 20, top: 20),

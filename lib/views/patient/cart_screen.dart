@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_ease/constants/color.dart';
 import 'package:test_ease/main.dart';
+import 'package:test_ease/views/patient/order/schedule_screen.dart';
 import 'package:test_ease/widgets/checkout_btn.dart';
 
 class CartScreen extends StatelessWidget {
@@ -9,6 +10,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final box = cartBox.values.length;
+    
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -51,7 +53,9 @@ class CartScreen extends StatelessWidget {
               },
             ),
           ),
-          CheckoutBtn(),
+          CheckoutBtn(onpressed: () =>    Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => ScheduleScreen())),),
 
         ],
       ),
