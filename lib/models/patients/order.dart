@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test_ease/models/labs_test.dart';
+import 'lab_test_order.dart'; // Make sure this path matches your file structure
 
 class Order {
   final String? id;
@@ -7,15 +7,15 @@ class Order {
   final String address;
   final TimeOfDay time;
   final DateTime selectedDate;
-  final List<LabsTest> tests;
+  final List<LabTestItem> tests;
   final String? paymentStatus;
   final String? status;
-  final int price;
+  final int totalPrice;
 
   Order({
     required this.address,
     this.paymentStatus,
-    required this.price,
+    required this.totalPrice,
     required this.tests,
     required this.userId,
     required this.time,
@@ -28,9 +28,12 @@ class Order {
     return Order(
       id: json['_id']?.toString(),
       address: json['selectedAddress'],
-      price: json['totalPrice'],
-      tests: (json['tests'] as List).map((test) => LabsTest.fromJson(test)).toList(),
-      userId: json['userId'],
+      totalPrice: json['totalPrice'],
+      tests: (json["tests"] as List?)
+              ?.where((x) => x is Map<String, dynamic>)
+              .map((x) => LabTestItem.fromJson(x as Map<String, dynamic>))
+              .toList() ?? [],
+      userId: json['userId'] ?? "",
       time: TimeOfDay.fromDateTime(DateTime.parse(json['time'])),
       selectedDate: DateTime.parse(json['selectedDate']),
       status: json['status']?.toString(),
@@ -39,13 +42,17 @@ class Order {
   }
 
   Map<String, dynamic> toJson() => {
-    "address": address,
-    "price": price,
-    "tests": tests.map((test) => test.toJson()).toList(),
-    "userId": userId,
-    "time": "${time.hour}:${time.minute}", // Convert TimeOfDay to string
-    "selectedDate": selectedDate.toIso8601String(),
-    "paymentStatus": paymentStatus,
-    "status": status,
-  };
+        "selectedAddress": address,
+        "totalPrice": totalPrice,
+        "tests": tests.map((x) => x.toJson()).toList(),
+        "userId": userId,
+        "time": DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          time.hour,
+          time.minute,
+        ).toIso8601String(),
+        "selectedDate": selectedDate.toIso8601String(),
+      };
 }

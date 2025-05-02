@@ -1,5 +1,5 @@
 import 'package:test_ease/api/admin/tests_admin.dart';
-import 'package:test_ease/models/test_catalogue.dart';
+import 'package:test_ease/models/admin/test_catalogue.dart';
 import 'package:test_ease/providers/base_view_model.dart';
 
 class AdminTestProvider extends BaseViewModel {

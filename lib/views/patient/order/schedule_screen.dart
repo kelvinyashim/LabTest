@@ -4,8 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:test_ease/constants/color.dart';
-import 'package:test_ease/models/cart.dart';
-import 'package:test_ease/models/order.dart';
+import 'package:test_ease/main.dart';
+import 'package:test_ease/models/patients/cart.dart';
+import 'package:test_ease/models/patients/lab_test_order.dart';
+import 'package:test_ease/models/patients/order.dart';
 import 'package:test_ease/providers/cart_box_provider.dart';
 import 'package:test_ease/providers/patients_provider.dart';
 import 'package:test_ease/providers/schedule_provider.dart';
@@ -13,45 +15,54 @@ import 'package:test_ease/providers/step_provider.dart';
 
 class ScheduleScreen extends StatelessWidget {
   const ScheduleScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final stepProvider = Provider.of<StepProvider>(context);
     final schedule = Provider.of<ScheduleProvider>(context);
     final patientProvider = Provider.of<PatientsProvider>(context);
- 
-    void createOrder(
+
+    void createOrder (
       ScheduleProvider schedule,
       CartBoxProvider cartProvider,
       PatientsProvider patientProvider,
-    ) async {
-      try {
-        if (schedule.selectedAddress != null &&
-            schedule.selectedDate != null &&
-            schedule.selectedTime != null &&
-            cartProvider.cartbox.isNotEmpty) {
-          int totalPrice = cartProvider.cartbox.values
-              .map((e) => e.labsTest.price)
-              .fold(0, (prev, curr) => prev + curr);
+    ) {
+      if (schedule.selectedAddress != null &&
+          schedule.selectedDate != null &&
+          schedule.selectedTime != null &&
+          cartProvider.cartbox.isNotEmpty){
+        int totalPrice = cartProvider.cartbox.values
+            .map((e) => e.labsTest.price)
+            .fold(0, (prev, curr) => prev + curr);
 
-          final order = Order(
-            address: schedule.selectedAddress ?? "aaa",
-            selectedDate: schedule.selectedDate!,
-            time: schedule.selectedTime!,
-            price: totalPrice,
-            tests: cartProvider.cartbox.values.map((e) => e.labsTest).toList(),
-            userId:'67f526ca5c0c3e1ee2c7ce28',
-          );
+        final testsList =
+            cartProvider.cartbox.values.map((test) {
+              return LabTestItem(
+                testId: test.labsTest.testId ?? '',
+                testName: test.labsTest.testName,
+                price: test.labsTest.price,
+                labName: test.labsTest.lab,
+              );
+            }).toList();
+        final order = Order(
+          address: schedule.selectedAddress!,
+          selectedDate: schedule.selectedDate!,
+          time: schedule.selectedTime!,
+          totalPrice: totalPrice,
+          tests: testsList,
+          userId: patientProvider.currentpatient!.id!,
+        );
 
-          await patientProvider.createOrder(order);
-          // Optionally navigate or show success message
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Order created')));
-        }
-      } catch (e) {
-        print('Error creating order: $e');
+        patientProvider.createOrder(order);
+        // Optionally navigate or show success message
+
+        Future.delayed(Duration(milliseconds: 9000));
+
+        cartBox.clear();
+
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Order created')));
       }
     }
 
@@ -170,10 +181,10 @@ class ScheduleScreen extends StatelessWidget {
 
 List<Step> getSteps(StepProvider step, BuildContext context) {
   final patient = Provider.of<PatientsProvider>(context, listen: false);
-  final TextEditingController text_controller = TextEditingController();
   final schedule = Provider.of<ScheduleProvider>(context, listen: false);
   final orderList = Provider.of<CartBoxProvider>(context, listen: false);
   String newAddress = "";
+  final TextEditingController myController = TextEditingController();
   return [
     Step(
       state: step.currentstep > 0 ? StepState.complete : StepState.indexed,
@@ -255,7 +266,7 @@ List<Step> getSteps(StepProvider step, BuildContext context) {
                                           ),
                                           SizedBox(height: 20),
                                           TextField(
-                                            controller: text_controller,
+                                            controller: myController,
                                             keyboardType:
                                                 TextInputType.multiline,
                                             maxLines: 6,

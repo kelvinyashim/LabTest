@@ -1,5 +1,6 @@
 import 'package:test_ease/api/labs/labs.dart';
-import 'package:test_ease/models/labs.dart';
+import 'package:test_ease/models/lab/labs.dart';
+import 'package:test_ease/models/patients/order.dart';
 import 'package:test_ease/providers/base_view_model.dart';
 
 class LabProvider extends BaseViewModel {
@@ -7,8 +8,8 @@ class LabProvider extends BaseViewModel {
   Lab? _lab;
   Lab? get lab => _lab;
 
-  final List<Lab> _labs = [];
-  List<Lab> get labs => _labs;
+  List<Order> _orders = [];
+  List<Order> get orders => _orders;
 
   Future<void> fetchCurrentLab() async {
     await runWithLoader(() async {
@@ -31,6 +32,12 @@ class LabProvider extends BaseViewModel {
   Future<void> updateLabProfile(Lab lab) async {
     await runWithLoader(() async {
       await _labApi.updateLabProfile(lab);
+    });
+  }
+
+  Future<void> getLabOrders() async {
+    await runWithLoader(() async {
+      _orders = await _labApi.getOrders();
     });
   }
 }

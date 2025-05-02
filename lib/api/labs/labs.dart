@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:test_ease/main.dart';
-import 'package:test_ease/models/labs.dart';
+import 'package:test_ease/models/lab/labs.dart';
 import 'package:http/http.dart' as http;
+import 'package:test_ease/models/lab/test.dart';
+import 'package:test_ease/models/patients/order.dart';
 
 class LabApi {
   final String baseUrl = 'https://labconnect-e569.onrender.com/api/labs/';
@@ -56,7 +58,7 @@ class LabApi {
     }
   }
 
-  Future<Lab> addTestToLab(String testId, String labId, int price) async {
+  Future<Test> addTestToLab(String testId, String labId, int price) async {
     final token = await tokenRole.getToken();
 
     if (token == null) {
@@ -75,7 +77,7 @@ class LabApi {
 
     try {
       if (response.statusCode == 201) {
-        return Lab.fromJson(jsonDecode(response.body));
+        return Test.fromJson(jsonDecode(response.body));
       } else {
         return throw Exception("Failed to login");
       }
@@ -121,20 +123,20 @@ class LabApi {
 
  
 
-  Future<List<Lab>> getAllTestsForLab(String id) async {
+  Future<List<Test>> getAllTestsForLab(String id) async {
     final token = await tokenRole.getTokenRole();
     if (token == null) {
       throw Exception('Token is null');
     }
     try {
       final response = await http
-          .get(Uri.parse('$baseUrl/tests/$id'), headers: <String, String>{
+          .get(Uri.parse('$baseUrl/tests'), headers: <String, String>{
         'x-auth-token': token,
         'Content-Type': 'application/json; charset=UTF-8',
       });
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        return data.map((e) => Lab.fromJson(e)).toList();
+        return data.map((e) => Test.fromJson(e)).toList();
       } else {
         throw Exception('Failed to load lab tests');
       }
@@ -171,5 +173,36 @@ class LabApi {
     } catch (error) {
       throw Exception(error.toString());
     }
+  }
+
+  Future<List<Order>> getOrders()async{
+      final token = await tokenRole.getTokenRole();
+    if (token == null) {
+      throw Exception('Token is null');
+    }
+
+    try{
+      final response = await http.get(Uri.parse('$baseUrl/orders'),
+       headers: <String, String>{
+          'x-auth-token': token,
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if(response.statusCode==200){
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((order)=> Order.fromJson(order)).toList();
+        
+      }else{
+        throw Exception('Failed to load orders');
+      }
+    }on http.ClientException {
+      throw Exception('Network error. Please check your internet connection.');
+    } on FormatException {
+      throw Exception('Unexpected response format. Please try again later.');
+    } catch (error) {
+      throw Exception(error.toString());
+    }
+    
   }
 }

@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:test_ease/api_constants/token_role.dart';
-import 'package:test_ease/models/labs.dart';
-import 'package:test_ease/models/labs_test.dart';
-import 'package:test_ease/models/order.dart';
-import 'package:test_ease/models/patient.dart';
+import 'package:test_ease/models/lab/labs.dart';
+import 'package:test_ease/models/patients/labs_test.dart';
+import 'package:test_ease/models/patients/order.dart';
+import 'package:test_ease/models/patients/patient.dart';
 
 class UserApi {
   TokenRole tokenRole = TokenRole();
@@ -100,7 +100,7 @@ class UserApi {
     }
   }
 
-  Future<void> loginUser(String email, String password) async {
+  Future<Patient> loginUser(String email, String password) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/auth'),
@@ -113,7 +113,10 @@ class UserApi {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final token = data['token'] as String;
+        final patient = data['message'];
         tokenRole.saveTokenRole(token);
+
+        return Patient.fromJson(patient);
       } else {
         throw Exception('Failed to login');
       }
@@ -267,10 +270,10 @@ class UserApi {
 
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        final newOrder = data['order'];
+        final newOrder = data['message'];
         return Order.fromJson(newOrder);
       } else {
-          final data = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
         throw Exception(data['message']);
       }
     } on http.ClientException {
@@ -297,10 +300,12 @@ class UserApi {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.map((e) => Order.fromJson(e)).toList();
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final List<dynamic> fetchedData = data['order'];
+        return fetchedData.map((e) => Order.fromJson(e)).toList();
       } else {
         throw Exception("Failed to load patient's orders");
       }

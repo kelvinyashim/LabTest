@@ -127,6 +127,7 @@ class PatientProfileScreen extends StatelessWidget {
                                     .contactInfo!
                                     .phone,
                           ),
+                          Text(patientProvider.currentpatient!.id!)
                         ],
                       ),
                     ),

@@ -1,4 +1,4 @@
-import 'package:test_ease/models/contact_info.dart';
+import 'package:test_ease/models/patients/contact_info.dart';
 
 class Patient {
     Patient({
@@ -19,7 +19,7 @@ class Patient {
 
     factory Patient.fromJson(Map<String, dynamic> json){ 
         return Patient(
-            id: json["_id"]?.toString(),
+            id: json['_id']?.toString(),
             name: json["name"] ?? "",
             email: json["email"] ?? "",
             password: json["password"] ?? "",

@@ -63,8 +63,8 @@ class PatientScreen extends StatelessWidget {
                     patient.fetchCurrentPatient();
                   },
                   child: Text(
-                    'Something went wrong\n Refresh                   ...',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    'Something went wrong\n Refresh\n...',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),
                   ),
                 ),
               )

@@ -23,7 +23,7 @@ class OnboardingScreen extends StatelessWidget {
               ),
             ),
           ),
-          Center(child: Lottie.asset("lib/assets/ani1.json")),
+          Center(child: Lottie.asset("lib/assets/ani1.json",)),
           Text(
             "Feeling unwell?  \n \n Skip the hospital queues!",
             style: GoogleFonts.lato(

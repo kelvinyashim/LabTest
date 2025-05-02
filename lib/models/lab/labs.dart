@@ -1,4 +1,4 @@
-import 'package:test_ease/models/contact_info.dart';
+import 'package:test_ease/models/patients/contact_info.dart';
 
 class Lab {
   final String? id;

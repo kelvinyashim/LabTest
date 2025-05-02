@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:test_ease/main.dart';
-import 'package:test_ease/models/test_catalogue.dart';
+import 'package:test_ease/models/admin/test_catalogue.dart';
 import 'package:http/http.dart' as http;
 
 class TestAdminApi {

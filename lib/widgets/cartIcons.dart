@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:test_ease/models/cart.dart' show CartItem;
+import 'package:test_ease/models/patients/cart.dart' show CartItem;
 import 'package:test_ease/views/patient/cart_screen.dart';
 
 class Carticons extends StatelessWidget {

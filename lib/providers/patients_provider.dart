@@ -1,7 +1,7 @@
 import 'package:test_ease/api/patient.dart';
-import 'package:test_ease/models/labs.dart';
-import 'package:test_ease/models/order.dart';
-import 'package:test_ease/models/patient.dart';
+import 'package:test_ease/models/lab/labs.dart';
+import 'package:test_ease/models/patients/order.dart';
+import 'package:test_ease/models/patients/patient.dart';
 import 'package:test_ease/providers/base_view_model.dart';
 
 class PatientsProvider extends BaseViewModel {
@@ -31,7 +31,7 @@ class PatientsProvider extends BaseViewModel {
 
   Future<void> createPatient(Patient patient) async {
     await runWithLoader(() async {
-     _currentpatient = await  _userApi.createUser(patient);
+      _currentpatient = await _userApi.createUser(patient);
     });
   }
 
@@ -43,7 +43,7 @@ class PatientsProvider extends BaseViewModel {
 
   Future<void> loginPatient(String email, String password) async {
     await runWithLoader(() async {
-      await _userApi.loginUser(email, password);
+      _currentpatient = await _userApi.loginUser(email, password);
     });
   }
 
@@ -69,7 +69,9 @@ class PatientsProvider extends BaseViewModel {
 
   Future<void> createOrder(Order order) async {
     await runWithLoader(() async {
-      _order = await _userApi.createOrder(order);
+      final newOrder = await _userApi.createOrder(order);
+      _order = newOrder;
+      _orders.add(newOrder);
     });
   }
 

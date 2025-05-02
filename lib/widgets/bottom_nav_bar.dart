@@ -18,8 +18,8 @@ class MyBottomNavBar extends StatelessWidget {
         backgroundColor: AppColors.greenBtn,
         items: [
           CurvedNavigationBarItem(
-            child: Icon(Icons.tips_and_updates),
-            label: 'Tips',
+            child: Icon(Icons.menu),
+            label: 'Orders',
           ),
           CurvedNavigationBarItem(
             child: Icon(Icons.home_outlined),

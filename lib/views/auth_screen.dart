@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_ease/models/contact_info.dart';
-import 'package:test_ease/models/patient.dart';
+import 'package:test_ease/models/patients/contact_info.dart';
+import 'package:test_ease/models/patients/patient.dart';
 import 'package:test_ease/providers/patients_provider.dart';
 import 'package:test_ease/views/forgot_psw.dart';
 import 'package:test_ease/views/patient/main_screen.dart';
@@ -44,10 +44,11 @@ void signUp() async {
       ).loginPatient(enteredEmail, enteredPsw);
       await Provider.of<PatientsProvider>(context, listen: false).fetchCurrentPatient();
       await Provider.of<PatientsProvider>(context, listen: false).getPatientAddress();
+      await Provider.of<PatientsProvider>(context, listen: false).getOrders();
 
 
 
-      Future.delayed(Duration(milliseconds: 10));
+      Future.delayed(Duration(milliseconds: 25));
        Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) =>  MainPatientScreen(),

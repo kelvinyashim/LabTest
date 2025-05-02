@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:test_ease/main.dart';
-import 'package:test_ease/models/labs.dart';
+import 'package:test_ease/models/lab/labs.dart';
 
 class AdminLabApi {
   final String baseUrl = 'https://labconnect-e569.onrender.com/api/admin/';
@@ -22,12 +22,12 @@ class AdminLabApi {
       } else {
         throw Exception('Failed to create lab');
       }
-    } on http.ClientException {
-      throw Exception('Failed to create lab');
+    }  on http.ClientException {
+      throw Exception("Network error. Please check your internet connection.");
     } on FormatException {
-      throw Exception('Failed to create lab');
+      throw Exception("Unexpected response format. Please try again later.");
     } catch (e) {
-      throw Exception('Failed to create lab');
+      throw Exception(e.toString());
     }
   }
 
@@ -45,12 +45,12 @@ class AdminLabApi {
       } else {
         throw Exception('Failed to get all labs');
       }
-    } on http.ClientException {
-      throw Exception('Failed to get all labs');
+    }  on http.ClientException {
+      throw Exception("Network error. Please check your internet connection.");
     } on FormatException {
-      throw Exception('Failed to get all labs');
+      throw Exception("Unexpected response format. Please try again later.");
     } catch (e) {
-      throw Exception('Failed to get all labs');
+      throw Exception(e.toString());
     }
   }
 }

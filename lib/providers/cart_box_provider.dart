@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:test_ease/models/cart.dart';
+import 'package:test_ease/models/patients/cart.dart';
 import 'package:test_ease/providers/base_view_model.dart';
 
 class CartBoxProvider extends BaseViewModel {

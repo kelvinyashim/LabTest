@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:test_ease/api/patient.dart';
 import 'package:test_ease/constants/color.dart';
 import 'package:test_ease/main.dart';
-import 'package:test_ease/models/cart.dart';
+import 'package:test_ease/models/patients/cart.dart';
 import 'package:test_ease/views/patient/labs/lab_details_screen.dart';
 import 'package:test_ease/widgets/cartIcons.dart';
 
@@ -49,6 +49,7 @@ class LabTestsPriceScreen extends StatelessWidget {
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   final lab = snapshot.data![index];
+                  
                   
                   return InkWell(
                     radius: 30,

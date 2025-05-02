@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:test_ease/models/labs_test.dart';
+import 'package:test_ease/models/patients/labs_test.dart';
 part 'cart.g.dart';
 @HiveType(typeId: 0)
 class CartItem {
