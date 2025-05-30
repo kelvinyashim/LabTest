@@ -49,7 +49,7 @@ class LabDetailsScreen extends StatelessWidget {
                       children: [
                         _buildInfoCard(
                           "Status",
-                          lab.status,
+                          lab.status!,
                           Icons.verified,
                           Colors.green,
                         ),

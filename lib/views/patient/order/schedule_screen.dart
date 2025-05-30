@@ -12,6 +12,7 @@ import 'package:test_ease/providers/cart_box_provider.dart';
 import 'package:test_ease/providers/patients_provider.dart';
 import 'package:test_ease/providers/schedule_provider.dart';
 import 'package:test_ease/providers/step_provider.dart';
+import 'package:test_ease/views/patient/order/order_screen.dart';
 
 class ScheduleScreen extends StatelessWidget {
   const ScheduleScreen({super.key});
@@ -20,8 +21,9 @@ class ScheduleScreen extends StatelessWidget {
     final stepProvider = Provider.of<StepProvider>(context);
     final schedule = Provider.of<ScheduleProvider>(context);
     final patientProvider = Provider.of<PatientsProvider>(context);
+    
 
-    void createOrder (
+    void createOrder(
       ScheduleProvider schedule,
       CartBoxProvider cartProvider,
       PatientsProvider patientProvider,
@@ -29,7 +31,7 @@ class ScheduleScreen extends StatelessWidget {
       if (schedule.selectedAddress != null &&
           schedule.selectedDate != null &&
           schedule.selectedTime != null &&
-          cartProvider.cartbox.isNotEmpty){
+          cartProvider.cartbox.isNotEmpty) {
         int totalPrice = cartProvider.cartbox.values
             .map((e) => e.labsTest.price)
             .fold(0, (prev, curr) => prev + curr);
@@ -37,12 +39,15 @@ class ScheduleScreen extends StatelessWidget {
         final testsList =
             cartProvider.cartbox.values.map((test) {
               return LabTestItem(
-                testId: test.labsTest.testId ?? '',
+                testId: test.labsTest.id??"",
                 testName: test.labsTest.testName,
                 price: test.labsTest.price,
                 labName: test.labsTest.lab,
               );
-            }).toList();
+              
+            }
+            
+            ).toList();
         final order = Order(
           address: schedule.selectedAddress!,
           selectedDate: schedule.selectedDate!,
@@ -51,6 +56,8 @@ class ScheduleScreen extends StatelessWidget {
           tests: testsList,
           userId: patientProvider.currentpatient!.id!,
         );
+        print((order.toJson()));
+
 
         patientProvider.createOrder(order);
         // Optionally navigate or show success message
@@ -58,6 +65,9 @@ class ScheduleScreen extends StatelessWidget {
         Future.delayed(Duration(milliseconds: 9000));
 
         cartBox.clear();
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => OrderScreen()),
+        );
 
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(
@@ -723,7 +733,7 @@ List<Step> getSteps(StepProvider step, BuildContext context) {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    'Total: ₦ ${totalPrice.toString()}',
+                    'Total: ₦${totalPrice.toString()}',
                     style: GoogleFonts.poppins(
                       color: Colors.green[700],
                       fontSize: 16,

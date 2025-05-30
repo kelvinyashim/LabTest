@@ -6,7 +6,8 @@ class Lab {
   final String address;
   final ContactInfo contactInfo;
   final String? price;
-  final String status;
+  final String? status;
+  final String? password;
 
   Lab({
     this.id,
@@ -14,12 +15,13 @@ class Lab {
     required this.name,
     required this.address,
     required this.contactInfo,
-    required this.status,
+     this.status,
+     this.password
   });
 
   factory Lab.fromJson(Map<String, dynamic> json) => Lab(
         id: json['_id']?.toString(),
-        name: json["name"] ?? 'Some Name',
+        name: json["name"],
         address: json["address"] ?? 'Some Address', 
         contactInfo: ContactInfo.fromJson(json["contactInfo"]),
         status: json["status"] ?? 'Some Status',
@@ -30,7 +32,6 @@ class Lab {
         "name": name,
         "address": address,
         "contactInfo": contactInfo.toJson(),
-        "status": status,
-        "price": price,
+        "password": password 
       };
 }

@@ -23,13 +23,14 @@ class LabsTestAdapter extends TypeAdapter<LabsTest> {
       price: fields[3] as int,
       labId: fields[4] as String?,
       testId: fields[5] as String?,
+      id: fields[6] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LabsTest obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.testName)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class LabsTestAdapter extends TypeAdapter<LabsTest> {
       ..writeByte(4)
       ..write(obj.labId)
       ..writeByte(5)
-      ..write(obj.testId);
+      ..write(obj.testId)
+      ..writeByte(6)
+      ..write(obj.id);
   }
 
   @override

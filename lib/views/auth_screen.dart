@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_ease/models/patients/contact_info.dart';
 import 'package:test_ease/models/patients/patient.dart';
+import 'package:test_ease/providers/lab_providers.dart';
 import 'package:test_ease/providers/patients_provider.dart';
+import 'package:test_ease/views/admin/admin_screen.dart';
 import 'package:test_ease/views/forgot_psw.dart';
+import 'package:test_ease/views/labs/lab_admin_screen.dart';
 import 'package:test_ease/views/patient/main_screen.dart';
 import 'package:test_ease/widgets/custom_text.dart';
 import 'package:test_ease/widgets/my_btn.dart';
+
+enum EntityType { user, lab, admin, phleb }
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -17,247 +22,262 @@ class AuthScreen extends StatefulWidget {
 
 class _FormsState extends State<AuthScreen> {
   final formKey = GlobalKey<FormState>();
-  var isLogin = true;
-  var enteredName = "";
-  var enteredRole = "";
-  var enteredContact = "";
-  var enteredAddress = "";
-  var enteredEmail = "";
-  var enteredPsw = "";
+  bool isLogin = true;
   bool isAuth = false;
   bool obscureText = true;
 
-void signUp() async {
-  final isValid = formKey.currentState!.validate();
-  if (!isValid) return;
+  String enteredName = '';
+  String enteredContact = '';
+  String enteredAddress = '';
+  String enteredEmail = '';
+  String enteredPsw = '';
+  EntityType? selectedEntity;
 
-  formKey.currentState!.save();
+  void signUp() async {
+    final patient = Provider.of<PatientsProvider>(context, listen: false);
+    final lab = Provider.of<LabProvider>(context, listen: false);
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
 
+    formKey.currentState!.save();
+    setState(() => isAuth = true);
 
-  try {
-      setState(() => isAuth = true);
-
-    if (isLogin) {
-      await Provider.of<PatientsProvider>(
-        context,
-        listen: false,
-      ).loginPatient(enteredEmail, enteredPsw);
-      await Provider.of<PatientsProvider>(context, listen: false).fetchCurrentPatient();
-      await Provider.of<PatientsProvider>(context, listen: false).getPatientAddress();
-      await Provider.of<PatientsProvider>(context, listen: false).getOrders();
-
-
-
-      Future.delayed(Duration(milliseconds: 25));
-       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) =>  MainPatientScreen(),
-        ),
-      );
-
-      
-    } else {
-      await Provider.of<PatientsProvider>(
-        context,
-        listen: false,
-      ).createPatient(
-        Patient(
-          name: enteredName,
-          contactInfo: ContactInfo(
-            address: [enteredAddress],
-            phone: enteredContact,
+    try {
+      if (isLogin) {
+        if (selectedEntity == EntityType.user) {
+          await patient.loginPatient(enteredEmail, enteredPsw);
+          await patient.fetchCurrentPatient();
+          await patient.getPatientAddress();
+          Navigator.of(
+            context,
+          ).pushReplacement(  MaterialPageRoute(builder: (_) => MainPatientScreen()),);
+        } else if (selectedEntity == EntityType.lab) {
+          await lab.loginLab(enteredEmail, enteredPsw);
+          await lab.fetchCurrentLab();
+          Navigator.of(
+            context,
+          
+          ).pushReplacement(MaterialPageRoute(builder:(context) => LabAdminScreen(), ));
+        }
+        else if (selectedEntity == EntityType.admin) {
+          await patient.loginPatient(enteredEmail, enteredPsw);
+          Navigator.of(
+            context,
+          
+          ).pushReplacement(MaterialPageRoute(builder:(context) => AdminScreen(), ));
+        }
+      } else {
+        await patient.createPatient(
+          Patient(
+            name: enteredName,
+            contactInfo: ContactInfo(
+              address: [enteredAddress],
+              phone: enteredContact,
+            ),
+            email: enteredEmail,
+            password: enteredPsw,
           ),
-          email: enteredEmail,
-          password: enteredPsw,
-        ),
-      );
-      await Provider.of<PatientsProvider>(context, listen: false).fetchCurrentPatient();
-      await Provider.of<PatientsProvider>(context, listen: false).getPatientAddress();
+        );
+        await patient.fetchCurrentPatient();
+        await patient.getPatientAddress();
 
-
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Account created successfully!",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => MainPatientScreen()),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Account created successfully!", style: TextStyle(color: Colors.white),),
-          backgroundColor: Colors.green,
-          
+          content: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.grey[300],
         ),
       );
-
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) =>  MainPatientScreen(),
-        ),
-      );
+    } finally {
+      setState(() => isAuth = false);
     }
-  } catch (e) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(e.toString(), style: TextStyle(color: Colors.black),),
-        backgroundColor:  Colors.grey[200]
-      ),
-    );
-  } finally {
-    setState(() => isAuth = false);
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[100],
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.lock_open_rounded,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 100,
-                ),
-                const SizedBox(height: 20),
-                Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 10),
-                      if (!isLogin)
-                        CustomTextFormField(
-                          hintText: 'Full name',
-                          icon: const Icon(
-                            Icons.account_circle,
-                            color: Colors.black,
-                          ),
-                          onSaved: (newValue) => enteredName = newValue!,
-                          validator: (value) {
-                            if (value == null ||
-                                value.isEmpty ||
-                                value.trim().length < 5) {
-                              return "8 - 15 characters";
-                            }
-                            return null;
-                          },
-                        ),
-                      const SizedBox(height: 10),
-                      if (!isLogin)
-                        CustomTextFormField(
-                          hintText: 'Contact',
-                          icon: const Icon(Icons.call, color: Colors.black),
-                          onSaved: (newValue) => enteredContact = newValue!,
-                          validator: (value) {
-                            if (value == null ||
-                                value.isEmpty ||
-                                value.trim().length < 5) {
-                              return "Must be 11 characters";
-                            }
-                            return null;
-                          },
-                        ),
-                      const SizedBox(height: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Icon(
+                      Icons.lock_open_rounded,
+                      size: 72,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      isLogin ? "Welcome Back" : "Create an Account",
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 20),
+                    if (!isLogin)
                       CustomTextFormField(
-                        icon: const Icon(Icons.email, color: Colors.black),
-                        hintText: "Email",
-                        onSaved: (newValue) => enteredEmail = newValue!,
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.trim().length < 5 ||
-                              !value.contains("@")) {
-                            return "Enter a valid email";
-                          }
-                          return null;
-                        },
+                        hintText: 'Full name',
+                        icon: const Icon(Icons.account_circle),
+                        onSaved: (val) => enteredName = val!,
+                        validator:
+                            (val) =>
+                                val == null || val.length < 3
+                                    ? "Enter valid name"
+                                    : null,
                       ),
-                      const SizedBox(height: 10),
-                      if (!isLogin)
-                        CustomTextFormField(
-                          hintText: "Address",
-                          icon: const Icon(
-                            Icons.location_on,
-                            color: Colors.black,
-                          ),
-                          onSaved: (newValue) => enteredAddress = newValue!,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your address';
-                            }
-                            return null;
-                          },
-                        ),
-                      const SizedBox(height: 10),
+                    if (!isLogin) const SizedBox(height: 10),
+                    if (!isLogin)
                       CustomTextFormField(
-                        icon: const Icon(Icons.lock, color: Colors.black),
-                        hintText: "Password",
-                        isPassword: obscureText,
-                        onSaved: (newValue) => enteredPsw = newValue!,
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.trim().length < 8) {
-                            return "8 - 15 characters";
-                          }
-                          return null;
-                        },
+                        hintText: 'Contact',
+                        icon: const Icon(Icons.phone),
+                        onSaved: (val) => enteredContact = val!,
+                        validator:
+                            (val) =>
+                                val == null || val.length < 8
+                                    ? "Enter valid contact"
+                                    : null,
                       ),
-                      const SizedBox(height: 10),
-                      if (isLogin)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              const ForgotPasswordScreen(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'Forgot Password?',
-                                  style: TextStyle(
-                                    color: Colors.blue.shade200,
-                                    fontSize: 15,
-                                  ),
+                    if (!isLogin) const SizedBox(height: 10),
+                    CustomTextFormField(
+                      hintText: 'Email',
+                      icon: const Icon(Icons.email),
+                      onSaved: (val) => enteredEmail = val!,
+                      validator:
+                          (val) =>
+                              val != null && val.contains("@")
+                                  ? null
+                                  : "Enter valid email",
+                    ),
+                    const SizedBox(height: 10),
+                    if (!isLogin)
+                      CustomTextFormField(
+                        hintText: 'Address',
+                        icon: const Icon(Icons.location_on),
+                        onSaved: (val) => enteredAddress = val!,
+                        validator:
+                            (val) =>
+                                val == null || val.isEmpty
+                                    ? "Enter address"
+                                    : null,
+                      ),
+                    if (!isLogin) const SizedBox(height: 10),
+
+                    CustomTextFormField(
+                      hintText: "Password",
+                      icon: const Icon(Icons.lock, color: Colors.black),
+                      isPassword: true,
+                      obscureText: obscureText,
+                      togglePasswordVisibility: () {
+                        setState(() {
+                          obscureText = !obscureText;
+                        });
+                      },
+                      onSaved: (value) => enteredPsw = value!,
+                      validator: (value) {
+                        if (value == null || value.length < 6) {
+                          return "Password must be at least 6 characters";
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 12),
+                    if (isLogin)
+                      DropdownButtonFormField<EntityType>(
+                        value: selectedEntity,
+                        hint: const Text('Login as'),
+                        items: const [
+                          DropdownMenuItem(
+                            value: EntityType.user,
+                            child: Text('User'),
+                          ),
+                          DropdownMenuItem(
+                            value: EntityType.lab,
+                            child: Text('Lab'),
+                          ),
+                           DropdownMenuItem(
+                            value: EntityType.admin,
+                            child: Text('Admin'),
+                          ),
+                           DropdownMenuItem(
+                            value: EntityType.phleb,
+                            child: Text('Phleb'),
+                          ),
+                        ],
+                        onChanged:
+                            (val) => setState(() => selectedEntity = val),
+                        validator: (val) => val == null ? "Select role" : null,
+                      ),
+                    if (isLogin)
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed:
+                              () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const ForgotPasswordScreen(),
                                 ),
                               ),
-                            ],
+                          child: Text(
+                            "Forgot Password?",
+                            style: TextStyle(color: Colors.blue.shade300),
                           ),
                         ),
-                      if (isAuth) const CircularProgressIndicator(),
-                      if (!isAuth)
-                        MyButton(
-                          text: isLogin ? "Log in" : "Sign up",
+                      ),
+                    const SizedBox(height: 16),
+                    isAuth
+                        ? const CircularProgressIndicator()
+                        : MyButton(
+                          text: isLogin ? "Log In" : "Sign Up",
                           onTap: signUp,
                         ),
-                      if (!isAuth)
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              isLogin = !isLogin;
-                            });
-                          },
-                          child: Text(
-                            isLogin
-                                ? "Don't have an account? Sign Up"
-                                : "Already have an account? Log in",
-                            style: TextStyle(
-                              color: Colors.blue.shade200,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+                    TextButton(
+                      onPressed: () => setState(() => isLogin = !isLogin),
+                      child: Text(
+                        isLogin
+                            ? "Don't have an account? Sign Up"
+                            : "Already have an account? Log In",
+                        style: TextStyle(color: Colors.blue.shade300),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

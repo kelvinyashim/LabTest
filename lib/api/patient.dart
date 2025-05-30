@@ -7,6 +7,8 @@ import 'package:test_ease/models/patients/labs_test.dart';
 import 'package:test_ease/models/patients/order.dart';
 import 'package:test_ease/models/patients/patient.dart';
 
+enum EntityType { user, lab }
+
 class UserApi {
   TokenRole tokenRole = TokenRole();
   final String baseUrl = 'https://labconnect-e569.onrender.com/api/users';
@@ -109,6 +111,9 @@ class UserApi {
         },
         body: jsonEncode({'email': email, 'password': password}),
       );
+      print('ddjd');
+      print(response.statusCode);
+      print(response.body);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -302,6 +307,7 @@ class UserApi {
       );
       print(response.statusCode);
       print(response.body);
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final List<dynamic> fetchedData = data['order'];

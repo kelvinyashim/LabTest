@@ -14,9 +14,14 @@ class TestAdminApi {
       throw Exception("No token provided");
     }
 
-    final response = await http.post(Uri.parse('$baseUrl/add-test'),
-        headers: {'x-auth-token': token, 'Content-Type': 'application/json'},
-        body: jsonEncode(test.toJson()));
+    final response = await http.post(
+      Uri.parse('$baseUrl/add-test'),
+      headers: {'x-auth-token': token, 'Content-Type': 'application/json'},
+      body: jsonEncode(test.toJson()),
+    );
+
+    print(response.body);
+    print(response.statusCode);
 
     try {
       if (response.statusCode == 201) {
@@ -41,10 +46,13 @@ class TestAdminApi {
       throw Exception("No token provided");
     }
 
-    final response = await http.get(Uri.parse('$baseUrl/tests'),
-        headers: {'x-auth-token': token, 'Content-Type': 'application/json'});
+    final response = await http.get(
+      Uri.parse('$baseUrl/tests'),
+      headers: {'x-auth-token': token, 'Content-Type': 'application/json'},
+    );
 
-    
+    print(response.statusCode);
+    print(response.body);
 
     try {
       if (response.statusCode == 200) {

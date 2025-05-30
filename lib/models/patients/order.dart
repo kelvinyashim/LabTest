@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'lab_test_order.dart'; // Make sure this path matches your file structure
+import 'package:test_ease/models/patients/lab_test_order.dart';
 
 class Order {
   final String? id;
@@ -28,11 +28,8 @@ class Order {
     return Order(
       id: json['_id']?.toString(),
       address: json['selectedAddress'],
-      totalPrice: json['totalPrice'],
-      tests: (json["tests"] as List?)
-              ?.where((x) => x is Map<String, dynamic>)
-              .map((x) => LabTestItem.fromJson(x as Map<String, dynamic>))
-              .toList() ?? [],
+      totalPrice: json['totalPrice'] ?? 0,
+      tests:  json["tests"] == null ? [] : List<LabTestItem>.from(json["tests"].map((x) => LabTestItem.fromJson(x))),
       userId: json['userId'] ?? "",
       time: TimeOfDay.fromDateTime(DateTime.parse(json['time'])),
       selectedDate: DateTime.parse(json['selectedDate']),
@@ -42,17 +39,19 @@ class Order {
   }
 
   Map<String, dynamic> toJson() => {
-        "selectedAddress": address,
-        "totalPrice": totalPrice,
-        "tests": tests.map((x) => x.toJson()).toList(),
-        "userId": userId,
-        "time": DateTime(
-          selectedDate.year,
-          selectedDate.month,
-          selectedDate.day,
-          time.hour,
-          time.minute,
-        ).toIso8601String(),
-        "selectedDate": selectedDate.toIso8601String(),
-      };
+    "selectedAddress": address,
+    "totalPrice": totalPrice,
+  "tests": tests.map((test) => test.toJson()).toList(),
+      "userId": userId,
+    "time":DateTime(
+    selectedDate.year,
+    selectedDate.month,
+    selectedDate.day,
+    time.hour,
+    time.minute,
+  ).toIso8601String(),  
+    "selectedDate": selectedDate.toIso8601String(),
+  };
 }
+
+

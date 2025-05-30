@@ -11,6 +11,9 @@ class LabProvider extends BaseViewModel {
   List<Order> _orders = [];
   List<Order> get orders => _orders;
 
+  Order? _order;
+  Order? get order => _order;
+
   Future<void> fetchCurrentLab() async {
     await runWithLoader(() async {
       _lab = await _labApi.getCurrentLab();
@@ -38,6 +41,12 @@ class LabProvider extends BaseViewModel {
   Future<void> getLabOrders() async {
     await runWithLoader(() async {
       _orders = await _labApi.getOrders();
+    });
+  }
+
+  Future<void> acceptOrder(String id) async {
+    await runWithLoader(() async {
+       await _labApi.acceptOrder(id);
     });
   }
 }

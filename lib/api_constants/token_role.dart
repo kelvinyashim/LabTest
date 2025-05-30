@@ -13,7 +13,7 @@ class TokenRole {
         utf8.decode(base64Url.decode(base64Url.normalize(token.split('.')[1]))),
       );
       final role = decodedToken['role'];
-      await prefs.setString('user_role', role);
+      await prefs.setString('user_role', role.toString());
     } catch (e) {
       print(e);
     }

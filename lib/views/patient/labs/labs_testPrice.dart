@@ -38,10 +38,10 @@ class LabTestsPriceScreen extends StatelessWidget {
             return const Center(
               child: CircularProgressIndicator(color: AppColors.greenBtn),
             );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No lab tests found.'));
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
@@ -50,13 +50,14 @@ class LabTestsPriceScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final lab = snapshot.data![index];
                   
-                  
+
                   return InkWell(
                     radius: 30,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => LabDetailsScreen(labId: lab.labId!,),
+                          builder:
+                              (context) => LabDetailsScreen(labId: lab.labId!),
                         ),
                       );
                     },
@@ -99,7 +100,10 @@ class LabTestsPriceScreen extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 duration: Duration(milliseconds: 90),
-                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 20,
+                                ),
                                 margin: EdgeInsets.all(10),
                                 backgroundColor: Colors.white,
                                 elevation: 4,
@@ -117,12 +121,7 @@ class LabTestsPriceScreen extends StatelessWidget {
                           child: Text(
                             'Select Lab',
                             style: TextStyle(color: AppColors.greenBtn),
-                          ).animate(
-                            delay: Duration(milliseconds: 20)
-                            
-                          
-
-                          ),
+                          ).animate(delay: Duration(milliseconds: 20)),
                         ),
                       ),
                     ),

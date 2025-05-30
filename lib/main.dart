@@ -13,6 +13,7 @@ import 'package:test_ease/providers/lab_providers.dart';
 import 'package:test_ease/providers/nav_index_provider.dart';
 import 'package:test_ease/providers/order_filter_provider.dart';
 import 'package:test_ease/providers/patients_provider.dart';
+import 'package:test_ease/providers/phleb.dart';
 import 'package:test_ease/providers/schedule_provider.dart';
 import 'package:test_ease/providers/step_provider.dart';
 import 'package:test_ease/providers/token_provider.dart';
@@ -45,7 +46,7 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (context) => NavIndexProvider()),
         ChangeNotifierProvider(
-          create: (context) => AdminTestProvider()..getTestCatalogue(),
+          create: (context) => AdminTestProvider()..getTestCatalogue()..getLabs(),
         ),
         ChangeNotifierProvider(
           create: (context) => LabProvider()..fetchCurrentLab(),
@@ -58,7 +59,8 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => CartBoxProvider()..initCart(),
         ),
-        ChangeNotifierProvider(create: (context) => OrderFilterProvider(),)
+        ChangeNotifierProvider(create: (context) => OrderFilterProvider(),),
+        ChangeNotifierProvider(create: (context) => PhlebProvider()..getPhlebs(),)
       ],
       child: MyApp(),
     ),
@@ -82,7 +84,7 @@ class MyApp extends StatelessWidget {
         case 'Lab':
           return const LabAdminScreen();
         case 'Phleb':
-          return const AdminScreen();
+          return const Center();
         default:
           return MainOnboardScreen();
       }

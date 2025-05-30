@@ -41,7 +41,7 @@ class PatientsProvider extends BaseViewModel {
     });
   }
 
-  Future<void> loginPatient(String email, String password) async {
+  Future<void> loginPatient(String email, String password, ) async {
     await runWithLoader(() async {
       _currentpatient = await _userApi.loginUser(email, password);
     });

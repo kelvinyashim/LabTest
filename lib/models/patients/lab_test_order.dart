@@ -20,7 +20,6 @@ class LabTestItem {
     );
   }
 
-  /// Only includes fields required by backend
   Map<String, dynamic> toJson() {
     return {
       'testId': testId,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyGridTile extends StatelessWidget {
   final String text;
@@ -8,11 +9,12 @@ class MyGridTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 4,
+      margin: EdgeInsets.all(2),
+      elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Column(children: [
         Padding(
-          padding: const EdgeInsets.only(top: 15),
+          padding: const EdgeInsets.only(top: 15, ),
           child: Image(
             height: 30,
             width: 30,
@@ -24,7 +26,9 @@ class MyGridTile extends StatelessWidget {
         Text(
           text,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: GoogleFonts.roboto(
+            color: Colors.black
+          ),
         ),
       ]),
     );

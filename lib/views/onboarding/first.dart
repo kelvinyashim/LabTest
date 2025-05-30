@@ -11,6 +11,7 @@ class OnboardingScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+
         children: [
           Text(
             "",
@@ -23,10 +24,10 @@ class OnboardingScreen extends StatelessWidget {
               ),
             ),
           ),
-          Center(child: Lottie.asset("lib/assets/ani1.json",)),
+          Center(child: Lottie.asset("lib/assets/ani1.json", width: 300, height: 200)),
           Text(
-            "Feeling unwell?  \n \n Skip the hospital queues!",
-            style: GoogleFonts.lato(
+            "Hospital lines — no more waiting rooms, just instant healthcare at your fingertips",
+            style: GoogleFonts.sacramento(
               textStyle: const TextStyle(
                 color: Colors.black,
                 fontSize: 20,
