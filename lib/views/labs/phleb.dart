@@ -4,7 +4,7 @@ import 'package:test_ease/constants/color.dart';
 import 'package:test_ease/models/patients/contact_info.dart';
 import 'package:test_ease/models/phleb/phleb.dart';
 import 'package:test_ease/providers/lab_providers.dart';
-import 'package:test_ease/providers/phleb.dart';
+import 'package:test_ease/providers/phleb_provider.dart';
 
 class AddPhlebScreen extends StatelessWidget {
   const AddPhlebScreen({super.key});

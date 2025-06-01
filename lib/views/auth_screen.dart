@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test_ease/api/phleb/phleb_api.dart';
 import 'package:test_ease/models/patients/contact_info.dart';
 import 'package:test_ease/models/patients/patient.dart';
 import 'package:test_ease/providers/lab_providers.dart';
 import 'package:test_ease/providers/patients_provider.dart';
+import 'package:test_ease/providers/phleb_provider.dart';
 import 'package:test_ease/views/admin/admin_screen.dart';
 import 'package:test_ease/views/forgot_psw.dart';
 import 'package:test_ease/views/labs/lab_admin_screen.dart';
 import 'package:test_ease/views/patient/main_screen.dart';
+import 'package:test_ease/views/phlebs/phleb_screen.dart';
 import 'package:test_ease/widgets/custom_text.dart';
 import 'package:test_ease/widgets/my_btn.dart';
 
@@ -36,7 +39,9 @@ class _FormsState extends State<AuthScreen> {
   void signUp() async {
     final patient = Provider.of<PatientsProvider>(context, listen: false);
     final lab = Provider.of<LabProvider>(context, listen: false);
+    final phleb = Provider.of<PhlebProvider>(context, listen: false);
     final isValid = formKey.currentState!.validate();
+    PhlebApi phlebApi = PhlebApi();
     if (!isValid) return;
 
     formKey.currentState!.save();
@@ -48,23 +53,25 @@ class _FormsState extends State<AuthScreen> {
           await patient.loginPatient(enteredEmail, enteredPsw);
           await patient.fetchCurrentPatient();
           await patient.getPatientAddress();
-          Navigator.of(
-            context,
-          ).pushReplacement(  MaterialPageRoute(builder: (_) => MainPatientScreen()),);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => MainPatientScreen()),
+          );
         } else if (selectedEntity == EntityType.lab) {
           await lab.loginLab(enteredEmail, enteredPsw);
           await lab.fetchCurrentLab();
-          Navigator.of(
-            context,
-          
-          ).pushReplacement(MaterialPageRoute(builder:(context) => LabAdminScreen(), ));
-        }
-        else if (selectedEntity == EntityType.admin) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => LabAdminScreen()),
+          );
+        } else if (selectedEntity == EntityType.admin) {
           await patient.loginPatient(enteredEmail, enteredPsw);
-          Navigator.of(
-            context,
-          
-          ).pushReplacement(MaterialPageRoute(builder:(context) => AdminScreen(), ));
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => AdminScreen()),
+          );
+        } else if (selectedEntity == EntityType.phleb) {
+          await phlebApi.loginPhleb(enteredEmail, enteredPsw);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => PhlebScreen()),
+          );
         }
       } else {
         await patient.createPatient(
@@ -229,11 +236,11 @@ class _FormsState extends State<AuthScreen> {
                             value: EntityType.lab,
                             child: Text('Lab'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: EntityType.admin,
                             child: Text('Admin'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: EntityType.phleb,
                             child: Text('Phleb'),
                           ),

@@ -273,6 +273,10 @@ class LabApi {
       );
 
       if (response.statusCode == 201) {
+        final token = response.headers['x-auth-token'];
+        if (token != null) {
+          tokenRole.saveTokenRole(token);
+        }
         final Map<String, dynamic> phleb = jsonDecode(response.body);
         final data = phleb['mesage'];
 
@@ -318,21 +322,30 @@ class LabApi {
     }
   }
 
-  // Future<void> assignOrder(String id)async{
-  //     final token = await tokenRole.getToken();
-  //   if (token == null) {
-  //     throw Exception('Token is null');
-  //   }
+  Future<void> assignOrder(String id, String orderId) async {
+    final token = await tokenRole.getToken();
+    if (token == null) {
+      throw Exception('Token is null');
+    }
 
-  //   try{
-  //     final response = http.post(Uri.parse('$baseUrl/assign-orders/$id')
-  //     headers: {
-  //       'x-auth-token': token,
-  //       'Content-Type': 'application/json;'
-  //     },
-  //     body: 
-  //     );
-  //   }
-
-  // }
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/assign-orders/$id/$orderId'),
+        headers: {'x-auth-token': token, 'Content-Type': 'application/json;'},
+      );
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        print(response.body);
+      } else {
+        throw ('Something went wrong');
+      }
+    } on http.ClientException {
+      throw ('Network error. Please check your internet connection.');
+    } on FormatException {
+      throw ('Unexpected response format. Please try again later.');
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
 }
