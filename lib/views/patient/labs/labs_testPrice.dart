@@ -39,7 +39,7 @@ class LabTestsPriceScreen extends StatelessWidget {
               child: CircularProgressIndicator(color: AppColors.greenBtn),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No lab tests found.'));
+            return const Center(child: Text('No lab currently offers this test!', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20),));
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
@@ -99,13 +99,13 @@ class LabTestsPriceScreen extends StatelessWidget {
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                duration: Duration(milliseconds: 90),
+                                duration: Duration(milliseconds: 450),
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 16,
                                   vertical: 20,
                                 ),
                                 margin: EdgeInsets.all(10),
-                                backgroundColor: Colors.white,
+                                backgroundColor: AppColors.greenBtn,
                                 elevation: 4,
                                 behavior: SnackBarBehavior.floating,
                                 shape: RoundedRectangleBorder(
@@ -113,7 +113,7 @@ class LabTestsPriceScreen extends StatelessWidget {
                                 ),
                                 content: Text(
                                   'Added to cart',
-                                  style: TextStyle(color: Colors.grey),
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                             );

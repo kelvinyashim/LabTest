@@ -34,6 +34,7 @@ class LabApi {
         }
 
         await tokenRole.saveTokenRole(token);
+        print(token);
 
         return Lab.fromJson(labJson);
       } else {
@@ -206,6 +207,7 @@ class LabApi {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
+      print(token);
       print(response.statusCode);
       print(response.body);
 
@@ -271,6 +273,9 @@ class LabApi {
         },
         body: jsonEncode(phleb.toJson()),
       );
+
+      print(response.statusCode);
+      print(response.body);
 
       if (response.statusCode == 201) {
         final token = response.headers['x-auth-token'];

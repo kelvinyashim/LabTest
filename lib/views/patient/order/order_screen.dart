@@ -36,16 +36,7 @@ class OrderScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => MainPatientScreen()),
-              );
-            },
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-          ),
-        ],
+      automaticallyImplyLeading: false,
         title: const Text('My Orders', style: TextStyle(color: Colors.white)),
         backgroundColor: AppColors.greenBtn,
         centerTitle: true,

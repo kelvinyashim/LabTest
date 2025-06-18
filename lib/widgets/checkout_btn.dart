@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:test_ease/constants/color.dart';
 
 class CheckoutBtn extends StatelessWidget {
-  const CheckoutBtn({super.key, required this.onpressed});
+  const CheckoutBtn({super.key, required this.onpressed, required this.text});
+  final String text;
   final void Function() onpressed;
 
   @override
@@ -21,9 +22,10 @@ class CheckoutBtn extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             margin: EdgeInsets.only(bottom: 20, top: 20),
             alignment: Alignment.center,
-            child: const Text(
-              "Checkout",
+            child:  Text(
+              text,
               style: TextStyle(
+                fontSize: 18,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),

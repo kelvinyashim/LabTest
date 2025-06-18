@@ -36,86 +36,108 @@ class _FormsState extends State<AuthScreen> {
   String enteredPsw = '';
   EntityType? selectedEntity;
 
-  void signUp() async {
-    final patient = Provider.of<PatientsProvider>(context, listen: false);
-    final lab = Provider.of<LabProvider>(context, listen: false);
-    final phleb = Provider.of<PhlebProvider>(context, listen: false);
-    final isValid = formKey.currentState!.validate();
-    PhlebApi phlebApi = PhlebApi();
-    if (!isValid) return;
+void signUp() async {
+  final patient = Provider.of<PatientsProvider>(context, listen: false);
+  final lab = Provider.of<LabProvider>(context, listen: false);
+  final phleb = Provider.of<PhlebProvider>(context, listen: false);
+  final isValid = formKey.currentState!.validate();
+  PhlebApi phlebApi = PhlebApi();
+  if (!isValid) return;
 
-    formKey.currentState!.save();
-    setState(() => isAuth = true);
+  formKey.currentState!.save();
 
-    try {
-      if (isLogin) {
-        if (selectedEntity == EntityType.user) {
-          await patient.loginPatient(enteredEmail, enteredPsw);
-          await patient.fetchCurrentPatient();
-          await patient.getPatientAddress();
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => MainPatientScreen()),
-          );
-        } else if (selectedEntity == EntityType.lab) {
-          await lab.loginLab(enteredEmail, enteredPsw);
-          await lab.fetchCurrentLab();
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => LabAdminScreen()),
-          );
-        } else if (selectedEntity == EntityType.admin) {
-          await patient.loginPatient(enteredEmail, enteredPsw);
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => AdminScreen()),
-          );
-        } else if (selectedEntity == EntityType.phleb) {
-          await phlebApi.loginPhleb(enteredEmail, enteredPsw);
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => PhlebScreen()),
-          );
-        }
-      } else {
-        await patient.createPatient(
-          Patient(
-            name: enteredName,
-            contactInfo: ContactInfo(
-              address: [enteredAddress],
-              phone: enteredContact,
-            ),
-            email: enteredEmail,
-            password: enteredPsw,
-          ),
-        );
+  if (!mounted) return;
+  setState(() => isAuth = true);
+
+  try {
+    if (isLogin) {
+      if (selectedEntity == EntityType.user) {
+        await patient.loginPatient(enteredEmail, enteredPsw);
         await patient.fetchCurrentPatient();
         await patient.getPatientAddress();
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Account created successfully!",
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pushReplacement(
-          context,
+        await patient.getOrders();
+        
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => MainPatientScreen()),
         );
+
+      } else if (selectedEntity == EntityType.lab) {
+        await lab.loginLab(enteredEmail, enteredPsw);
+        await lab.fetchCurrentLab();
+        await lab.getPhlebs();
+        await phleb.getPhlebs();
+
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => LabAdminScreen()),
+        );
+
+      } else if (selectedEntity == EntityType.admin) {
+        await patient.loginPatient(enteredEmail, enteredPsw);
+
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => AdminScreen()),
+        );
+
+      } else if (selectedEntity == EntityType.phleb) {
+        await phlebApi.loginPhleb(enteredEmail, enteredPsw);
+        await phleb.getOrders();
+
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => PhlebScreen()),
+        );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.black),
+    } else {
+      await patient.createPatient(
+        Patient(
+          name: enteredName,
+          contactInfo: ContactInfo(
+            address: [enteredAddress],
+            phone: enteredContact,
           ),
-          backgroundColor: Colors.grey[300],
+          email: enteredEmail,
+          password: enteredPsw,
         ),
       );
-    } finally {
-      setState(() => isAuth = false);
+
+      await patient.fetchCurrentPatient();
+      await patient.getPatientAddress();
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Account created successfully!",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => MainPatientScreen()),
+      );
     }
+  } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          e.toString(),
+          style: const TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.grey[300],
+      ),
+    );
+  } finally {
+    if (!mounted) return;
+    setState(() => isAuth = false);
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +284,7 @@ class _FormsState extends State<AuthScreen> {
                               ),
                           child: Text(
                             "Forgot Password?",
-                            style: TextStyle(color: Colors.blue.shade300),
+                            style: TextStyle(color: Colors.grey),
                           ),
                         ),
                       ),
@@ -279,7 +301,7 @@ class _FormsState extends State<AuthScreen> {
                         isLogin
                             ? "Don't have an account? Sign Up"
                             : "Already have an account? Log In",
-                        style: TextStyle(color: Colors.blue.shade300),
+                        style: TextStyle(color: Colors.grey),
                       ),
                     ),
                   ],

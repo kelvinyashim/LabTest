@@ -22,4 +22,28 @@ class CartBoxProvider extends BaseViewModel {
       notifyListeners();
     });
   }
+
+  /// 🔹 Remove by index/key
+  Future<void> removeItemAt(int index) async {
+    await cartbox.deleteAt(index);
+    notifyListeners();
+  }
+
+  /// 🔹 Remove by labsTest ID (if stored uniquely)
+  Future<void> removeItemByTestId(String testId) async {
+    final keyToRemove = cartbox.keys.firstWhere(
+      (key) => cartbox.get(key)?.labsTest.id == testId,
+      orElse: () => null,
+    );
+    if (keyToRemove != null) {
+      await cartbox.delete(keyToRemove);
+      notifyListeners();
+    }
+  }
+
+  /// 🔹 Clear the entire cart
+  Future<void> clearCart() async {
+    await cartbox.clear();
+    notifyListeners();
+  }
 }

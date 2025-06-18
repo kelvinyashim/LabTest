@@ -1,6 +1,7 @@
 import 'package:test_ease/api/labs/labs.dart';
 import 'package:test_ease/models/lab/labs.dart';
 import 'package:test_ease/models/patients/order.dart';
+import 'package:test_ease/models/phleb/phleb.dart';
 import 'package:test_ease/providers/base_view_model.dart';
 
 class LabProvider extends BaseViewModel {
@@ -10,6 +11,9 @@ class LabProvider extends BaseViewModel {
 
   List<Order> _orders = [];
   List<Order> get orders => _orders;
+
+  List<Phleb> _phlebs = [];
+  List<Phleb> get phlebs => _phlebs;
 
   Order? _order;
   Order? get order => _order;
@@ -49,4 +53,12 @@ class LabProvider extends BaseViewModel {
        await _labApi.acceptOrder(id);
     });
   }
+
+
+  Future<void> getPhlebs() async {
+    await runWithLoader(() async {
+      _phlebs = await _labApi.getAllPhlebs();
+    });
+  }
+
 }

@@ -21,6 +21,7 @@ import 'package:test_ease/views/admin/admin_screen.dart';
 import 'package:test_ease/views/labs/lab_admin_screen.dart';
 import 'package:test_ease/views/onboarding/main_onboard_screen.dart';
 import 'package:test_ease/views/patient/main_screen.dart';
+import 'package:test_ease/views/phlebs/phleb_screen.dart';
 
 TokenRole tokenRole = TokenRole();
 var cartBox = Hive.box<CartItem>('cart');
@@ -49,7 +50,7 @@ void main() async {
           create: (context) => AdminTestProvider()..getTestCatalogue()..getLabs(),
         ),
         ChangeNotifierProvider(
-          create: (context) => LabProvider()..fetchCurrentLab(),
+          create: (context) => LabProvider()..fetchCurrentLab()..getPhlebs(),
         ),
         ChangeNotifierProvider(create: (context) => StepProvider()),
         ChangeNotifierProvider(create: (context) => ScheduleProvider()),
@@ -60,7 +61,7 @@ void main() async {
           create: (context) => CartBoxProvider()..initCart(),
         ),
         ChangeNotifierProvider(create: (context) => OrderFilterProvider(),),
-        ChangeNotifierProvider(create: (context) => PhlebProvider()..getPhlebs(),)
+        ChangeNotifierProvider(create: (context) => PhlebProvider()..getPhlebs()..getOrders(),)
       ],
       child: MyApp(),
     ),
@@ -84,7 +85,7 @@ class MyApp extends StatelessWidget {
         case 'Lab':
           return const LabAdminScreen();
         case 'Phleb':
-          return const Center();
+          return PhlebScreen();
         default:
           return MainOnboardScreen();
       }

@@ -23,6 +23,7 @@ class TokenRole {
     final prefs = await SharedPreferences.getInstance();
    return prefs.getString('user_role');
   }
+  
 
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();

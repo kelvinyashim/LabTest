@@ -31,73 +31,88 @@ class AddPhlebScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: phleb.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : phleb.phlebs.isEmpty
-              ? const Center(
-                  child: Text("No phlebotomists added yet."),
-                )
+      body:
+          phleb.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : phleb.phlebs.isEmpty
+              ? Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Something went wrong."),
+                  ElevatedButton(
+                    onPressed: ()=>
+                      lab.getPhlebs(),
+                    child: Text('Refresh'),
+                  ),
+                ],
+              )
               : ListView.builder(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: phleb.phlebs.length,
-                  itemBuilder: (context, index) {
-                    final gottenPhlebs = phleb.phlebs[index];
-                    return Card(
-                      elevation: 3,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                padding: const EdgeInsets.all(12),
+                itemCount: phleb.phlebs.length,
+                itemBuilder: (context, index) {
+                  final gottenPhlebs = phleb.phlebs[index];
+                  return Card(
+                    elevation: 3,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
                       ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10),
-                        leading: CircleAvatar(
-                          backgroundColor: AppColors.greenBtn,
-                          child: Text(
-                            gottenPhlebs.name.isNotEmpty
-                                ? gottenPhlebs.name[0].toUpperCase()
-                                : '?',
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        title: Text(
-                          gottenPhlebs.name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                const Icon(Icons.phone, size: 16),
-                                const SizedBox(width: 5),
-                                Text(gottenPhlebs.contactInfo.phone),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Icon(Icons.email, size: 16),
-                                const SizedBox(width: 5),
-                                Text(gottenPhlebs.contactInfo.email!),
-                              ],
-                            ),
-                          ],
-                        ),
-                        trailing: Chip(
-                          label: Text(
-                            gottenPhlebs.status!,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: gottenPhlebs.status == 'Available'
-                              ? Colors.green
-                              : Colors.grey,
+                      leading: CircleAvatar(
+                        backgroundColor: AppColors.greenBtn,
+                        child: Text(
+                          gottenPhlebs.name.isNotEmpty
+                              ? gottenPhlebs.name[0].toUpperCase()
+                              : '?',
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                    );
-                  },
-                ),
+                      title: Text(
+                        gottenPhlebs.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              const Icon(Icons.phone, size: 16),
+                              const SizedBox(width: 5),
+                              Text(gottenPhlebs.contactInfo.phone),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Icon(Icons.email, size: 16),
+                              const SizedBox(width: 5),
+                              Text(gottenPhlebs.contactInfo.email!),
+                            ],
+                          ),
+                        ],
+                      ),
+                      trailing: Chip(
+                        label: Text(
+                          gottenPhlebs.status!,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor:
+                            gottenPhlebs.status == 'Available'
+                                ? Colors.green
+                                : Colors.grey,
+                      ),
+                    ),
+                  );
+                },
+              ),
     );
   }
 
@@ -159,23 +174,28 @@ class AddPhlebScreen extends StatelessWidget {
                   _buildTextField(label: "Name", controller: nameController),
                   _buildTextField(label: "Email", controller: emailController),
                   _buildTextField(label: "Phone", controller: phone),
-                  _buildTextField(
-                      label: "Password", controller: pswController),
+                  _buildTextField(label: "Password", controller: pswController),
                   const SizedBox(height: 30),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      final newPhleb = Phleb(
-                        name: nameController.text.trim(),
-                        contactInfo: ContactInfo(
-                          phone: phone.text.trim(),
-                          email: emailController.text.trim(),
-                        ),
-                        password: pswController.text.trim(),
-                        associatedLab: id,
-                      );
-                      phleb.addPhleb(newPhleb);
-                      Navigator.pop(context);
-                    },
+                   onPressed: () {
+  final newPhleb = Phleb(
+    name: nameController.text.trim(),
+    contactInfo: ContactInfo(
+      phone: phone.text.trim(),
+      email: emailController.text.trim(),
+    ),
+    password: pswController.text.trim(),
+    associatedLab: id,
+  );
+
+  // Delay the update so it doesn't interfere with current build
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    phleb.addPhleb(newPhleb);
+  });
+
+  Navigator.pop(context);
+},
+
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.greenBtn,
                       shape: RoundedRectangleBorder(

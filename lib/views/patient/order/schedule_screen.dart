@@ -12,6 +12,7 @@ import 'package:test_ease/providers/cart_box_provider.dart';
 import 'package:test_ease/providers/patients_provider.dart';
 import 'package:test_ease/providers/schedule_provider.dart';
 import 'package:test_ease/providers/step_provider.dart';
+import 'package:test_ease/views/patient/main_screen.dart';
 import 'package:test_ease/views/patient/order/order_screen.dart';
 
 class ScheduleScreen extends StatelessWidget {
@@ -21,7 +22,6 @@ class ScheduleScreen extends StatelessWidget {
     final stepProvider = Provider.of<StepProvider>(context);
     final schedule = Provider.of<ScheduleProvider>(context);
     final patientProvider = Provider.of<PatientsProvider>(context);
-    
 
     void createOrder(
       ScheduleProvider schedule,
@@ -39,15 +39,12 @@ class ScheduleScreen extends StatelessWidget {
         final testsList =
             cartProvider.cartbox.values.map((test) {
               return LabTestItem(
-                testId: test.labsTest.id??"",
+                testId: test.labsTest.id ?? "",
                 testName: test.labsTest.testName,
                 price: test.labsTest.price,
                 labName: test.labsTest.lab,
               );
-              
-            }
-            
-            ).toList();
+            }).toList();
         final order = Order(
           address: schedule.selectedAddress!,
           selectedDate: schedule.selectedDate!,
@@ -58,7 +55,6 @@ class ScheduleScreen extends StatelessWidget {
         );
         print((order.toJson()));
 
-
         patientProvider.createOrder(order);
         // Optionally navigate or show success message
 
@@ -66,13 +62,16 @@ class ScheduleScreen extends StatelessWidget {
 
         cartBox.clear();
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => OrderScreen()),
+          MaterialPageRoute(builder: (context) => MainPatientScreen()),
         );
 
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Order created')));
+        ).showSnackBar(SnackBar(
+          backgroundColor: AppColors.greenBtn,
+          padding: EdgeInsets.all(30),
+          content: Text('Order created', style: TextStyle(color: Colors.white),)));
       }
     }
 
@@ -733,7 +732,7 @@ List<Step> getSteps(StepProvider step, BuildContext context) {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    'Total: ₦${totalPrice.toString()}',
+                    'Total: ₦$totalPrice',
                     style: GoogleFonts.poppins(
                       color: Colors.green[700],
                       fontSize: 16,

@@ -12,4 +12,6 @@ class TokenProvider extends BaseViewModel {
     _tokenRole = await _role.getTokenRole();
     });
   }
+
+  
 }
